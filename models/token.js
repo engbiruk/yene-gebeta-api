@@ -16,7 +16,7 @@ var TokenSchema = new Schema({
     value: { type: String },
     revoked: { type: Boolean, default: true },
     user: { type: Schema.Types.ObjectId, ref: 'User' },
-    expires: { type: Date }
+    expires: { type: Date },
     
     // basic fields
    date_created: { type: Date },

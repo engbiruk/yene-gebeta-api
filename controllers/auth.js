@@ -11,3 +11,9 @@ exports.noop = function noop(req, res, next){
         message: "TO BE IMPLEMENTED"
     })
 };
+
+exports.login = function login(req, res, next){
+    res.json({
+        message: "TO BE IMPLEMENTED"
+    })
+};

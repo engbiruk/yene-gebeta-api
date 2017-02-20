@@ -12,7 +12,7 @@ var reviewRouter			        = require('./review');
 var userRouter			            = require('./user');
 
 // EXPORT ROUTER AS A MODULE
-module.express = function initRouter(app){
+module.exports = function initRouter(app){
 
     // Branchs Endpoint
     app.use('/branches', branchRouter);

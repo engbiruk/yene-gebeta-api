@@ -10,7 +10,7 @@ var authorize		= require('../lib/authorize');
 var router = express.Router();
 
 // POST /reviewes
-router.create('/:reviewId', review.noop);
+router.post('/:reviewId', review.noop);
 
 // DELETE /reviewes/:reviewId
 router.delete('/:reviewId', review.noop);

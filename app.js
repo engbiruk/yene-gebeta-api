@@ -4,6 +4,7 @@ var mongoose			= require('mongoose');
 var bodyparser			= require('body-parser');
 var debug			    = require('debug')('gebeta-api');
 var validator			= require('express-validator');
+var unless			    = require('express-unless');
 
 // LOAD APP CONFIGRATION
 var config			    = require('./config');
@@ -24,7 +25,7 @@ mongoose.connection.on('connected', function mongodbConnectionListener(){
 
 // listen to mongodb connection failure
 mongoose.connection.on('error', function mongodbConnectionListener() {
-    debug('[APP] Mongodb Connection Fialed!');
+    debug('[APP] Mongodb Connection Failed!');
 
     // try reconnecting...
     mongoose.connect(config.MONGODB_URL);

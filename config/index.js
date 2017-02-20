@@ -1,7 +1,7 @@
 
 var HTTP_PORT = process.env.HTTP_PORT || 8000;
 
-module.express = {
+module.exports = {
     // HTTP PORT
     HTTP_PORT: HTTP_PORT,
 

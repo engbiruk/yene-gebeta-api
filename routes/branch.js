@@ -10,7 +10,7 @@ var authorize		= require('../lib/authorize');
 var router = express.Router();
 
 // POST /branches
-router.create('/:branchId', branch.noop);
+router.post('/:branchId', branch.noop);
 
 // DELETE /branches/:branchId
 router.delete('/:branchId', branch.noop);

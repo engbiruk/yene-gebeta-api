@@ -10,7 +10,7 @@ var authorize		= require('../lib/authorize');
 var router = express.Router();
 
 // POST /menu_categoryes
-router.create('/:menu_categoryId', menu_category.noop);
+router.post('/:menu_categoryId', menu_category.noop);
 
 // DELETE /menu_categoryes/:menu_categoryId
 router.delete('/:menu_categoryId', menu_category.noop);

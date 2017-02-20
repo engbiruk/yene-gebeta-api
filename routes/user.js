@@ -76,3 +76,5 @@ router.put('/:userId', user.noop);
 
 // DELETE /users/:userId
 router.delete('/:userId', user.noop);
+
+module.exports = router;
