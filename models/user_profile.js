@@ -28,7 +28,6 @@ var User_profileSchema = new Schema({
    last_modified: { type: Date },
 
    // references
-    User_profile_category: { type: ObjectId, ref: 'User_profile_category' },
     picture: { type: ObjectId, ref: 'Image' },
     user: { type: ObjectId, ref:'User' }
 });

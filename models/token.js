@@ -15,14 +15,14 @@ var TokenSchema = new Schema({
     
     value: { type: String },
     revoked: { type: Boolean, default: true },
-    user: { type: Schema.Types.ObjectId, ref: 'User' },
     expires: { type: Date },
     
     // basic fields
    date_created: { type: Date },
    last_modified: { type: Date },
 
-   
+   // references
+   user: { type: Schema.Types.ObjectId, ref: 'User' }
 });
 
 // PRE SAVE HOOK

@@ -62,7 +62,7 @@ var RestaturantSchema = new Schema({
     reservation: [{ type: ObjectId, ref:'Reservation' }],
     opening_hours: { type: ObjectId, ref:'Opening_hours' },
     menu: [{ type: ObjectId, ref:'Menu' }],
-    review: [{ type: ObjectId, ref:'Review' }],
+    review: [{ type: ObjectId, ref:'Review' }]
 
 });
 

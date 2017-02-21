@@ -18,7 +18,7 @@ var Menu_categorySchema = new Schema({
 
    // basic fields
    date_created: { type: Date },
-   last_modified: { type: Date },
+   last_modified: { type: Date }
 
    
 });
