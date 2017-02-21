@@ -11,7 +11,7 @@ var User			= require('../models/user');
 
 // LOAD POPULATED AND RETURN FIELDS
 var population = [{
-    path: 'User_profile'
+    path: 'user_profile'
 }];
 
 /**

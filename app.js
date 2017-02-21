@@ -39,7 +39,7 @@ var app = express();
 // set authentication middleware
 app.use(authenticate().unless({
     // paths that are authentication is waved
-    path: ['/users/login', '/users/logout', '/users/signup']
+    path: ['/users/login', '/users/logout', '/users/signup', '/users/all']
 }));
 
 // set body parser middleware

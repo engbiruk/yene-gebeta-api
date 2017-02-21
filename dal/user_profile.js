@@ -26,7 +26,7 @@ exports.create = function create(userProfileData, callback) {
     debug('[User_profile DAL] Creating a new user profile...');
 
     // create an object from the passed user profile data
-    var userProfileModel = new User(userProfileData);
+    var userProfileModel = new User_profile(userProfileData);
 
     // save the new user profile model to the database
     userProfileModel.save(function saveUserProfile(err, data){
@@ -83,10 +83,10 @@ exports.delete = function remove(query, callback) {
 exports.get = function get(query, callback) {
     debug('[User_profile DAL] Geting a user profile: ' + query);
 
-    User
+    User_profile
         .findOne(query)     // find the user profile from the query
         .populate(population)       // populate with a User model link
-        .exec(function getUser(err, userProfile){
+        .exec(function getUserProfile(err, userProfile){
             if(err) return callback(err);
             
             // return the user profile to the callback function. return empity object if the user profile doesn't exist in the database
@@ -109,7 +109,7 @@ exports.update = function update(query, updates, callback) {
     // set update's set value 
     updates.$set = updates.$set || {};
 
-    User
+    User_profile
         .findOneAndUpdate(query, updates) // find the user profile from the query and updates them with a new updates
         .populate(population)       // populate fields with a new user model
         .exec(function updateUserProfile(err, userProfile){
@@ -132,7 +132,7 @@ exports.update = function update(query, updates, callback) {
 exports.getCollection = function getACollectionOfUsers(query, callback) {
     debug('[User_profile DAL] fetching a collection of users\' profile' , query);
 
-    User
+    User_profile
     .find(query)
     .populate(population)
     .exec(function getUsersProfileCollection(err, userProfiles){

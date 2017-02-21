@@ -20,8 +20,8 @@ var UserSchema = new Schema({
     last_login: { type: Date },
 
     // basic fields
-   date_created: { type: Date },
-   last_modified: { type: Date },
+    date_created: { type: Date },
+    last_modified: { type: Date },
 
    // reference
     user_profile: { type: ObjectId, ref:'User_profile' }

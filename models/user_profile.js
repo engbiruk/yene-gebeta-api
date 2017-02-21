@@ -17,9 +17,9 @@ var User_profileSchema = new Schema({
     last_name: { type: String },
     email: { type: String },
     date_of_birth: { type: Date },
-    city: { type: String },
+    city: { type: String, defaul: 'Addis Ababa' },
     country: { type: String, default: 'Ethiopia' },
-    address: { type: String },
+    phone_number: { type: String },
     gender: { type: String },
     about: { type: String },
 

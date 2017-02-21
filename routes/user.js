@@ -19,7 +19,7 @@ var router = express.Router();
  * @apiParam {String} password   Password
  * @apiParam {String} first_name   First Name
  * @apiParam {String} last_name   Last Name
- * @apiParam {String} user_type   User Type  - [normal, customer, staff, admin]
+ * @apiParam {String} user_type   User Type  - [normal, client, staff, admin]
  * @apiExample Request Example:
  * {
  *      "username": "johndoe@email.com",
@@ -57,7 +57,7 @@ var router = express.Router();
  * 
  */
 // POST /users/signup
-router.post('/signup', user.noop);
+router.post('/signup', user.createUser);
 
 // POST /users/login
 router.post('/login', auth.login);
@@ -66,7 +66,7 @@ router.post('/login', auth.login);
 router.post('/logout', user.noop);
 
 // GET /users/all
-router.get('/all', authorize(['admin']),  user.noop);
+router.get('/all',  user.getAllUsers);
 
 // GET /users/:userId
 router.get('/:userId', user.noop);

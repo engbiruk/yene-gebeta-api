@@ -15,5 +15,10 @@ module.exports = {
     TOKEN_LENGTH: 10,
 
     // AUTHENTICATION REALM
-    REALM: 'Bearer'
+    REALM: 'Bearer',
+
+    // USER TYPES
+    USER_TYPES: [
+        'normal', 'client', 'staff', 'admin'
+    ]
 };
