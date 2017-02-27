@@ -5,6 +5,7 @@
 // LOAD MODULE DEPEDENCIES
 var debug			= require('debug')('yene-gebeta-api:user-dal');
 var moment			= require('moment');
+var bcrypt			= require('bcrypt');
 
 // LOAD MODELS
 var User			= require('../models/user');
@@ -141,3 +142,18 @@ exports.getCollection = function getACollectionOfUsers(query, callback) {
         callback(null, users || {});
     });
 };
+
+
+// exports.checkPassword = function checkPassword(password, callback) {
+//     debug('[Checking Passwords]')
+
+//     // get the user
+//     var user = req._user;
+
+//     // Compare two passwords
+//     bcrypt.compare(password, user.password, function done(err, res) {
+//         if(err) return callback(err);
+
+//         callback(null, res);
+//     });
+// };

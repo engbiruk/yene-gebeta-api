@@ -63,7 +63,7 @@ router.post('/signup', user.createUser);
 router.post('/login', auth.login);
 
 // POST /users/logout
-router.post('/logout', user.noop);
+router.post('/logout', auth.logout);
 
 // GET /users/all
 router.get('/all',  user.getAllUsers);

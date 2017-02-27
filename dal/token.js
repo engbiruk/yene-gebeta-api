@@ -11,7 +11,7 @@ var Token			= require('../models/token');
 
 // LOAD POPULATED AND RETURN FIELDS
 var population = [{
-    path: 'User'
+    path: 'user'
 }];
 
 /**

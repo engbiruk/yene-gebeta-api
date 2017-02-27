@@ -2,7 +2,7 @@
 var mongoose = require('mongoose');
 var moment = require('moment');
 var bcrypt = require('bcrypt');
-var debug = require('debug')('yene-gebeta');
+var debug = require('debug')('yene-gebeta-api');
 
 // LOAD CONFIG
 var config = require('../config');
@@ -28,17 +28,17 @@ var UserSchema = new Schema({
 });
 
 // PRE SAVE HOOK
-UserSchema.pre('save', function preSaveHook(next) {
+UserSchema.pre('save',true, function preSaveHook(next, done) {
     debug('[User Model] Pre-save Hook...')
 
     let model = this;
 
     // generate a salt
     bcrypt.genSalt(config.SALT_LENGTH, function generateSalt(err, SALT) {
-        if (err) return next(err);
+        if (err) return done(err);
         // generate hash for a password using salt
         bcrypt.hash(model.password, SALT, function hashPassword(err, HASH) {
-            if (err) return next(err);
+            if (err) return done(err);
 
             // create a current timestamp
             var now = moment().toISOString();
@@ -48,6 +48,7 @@ UserSchema.pre('save', function preSaveHook(next) {
             model.last_modified = now;
             // modify password with a new hashed password
             model.password = HASH;
+            done();
         });
     });
 
@@ -68,11 +69,12 @@ UserSchema.pre('update', function preUpdateHook(next) {
 });
 
 // COMPARE PASSWORDS METHOD
-UserSchema.method.checkPassword = function checkPassword(password, callback) {
+UserSchema.methods.checkPassword = function checkPassword(password, callback) {
+    
     // Compare two passwords
     bcrypt.compare(password, this.password, function done(err, res) {
         if(err) return callback(err);
-
+        
         callback(null, res);
     });
 };

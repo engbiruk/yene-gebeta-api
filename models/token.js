@@ -26,7 +26,7 @@ var TokenSchema = new Schema({
 });
 
 // PRE SAVE HOOK
-TokenSchema.pre('save', function preSaveHook(next) {
+TokenSchema.pre('save', true, function preSaveHook(next, done) {
     debug('[Token Model] Pre-save Hook...')
 
     let model = this;
@@ -37,12 +37,13 @@ TokenSchema.pre('save', function preSaveHook(next) {
     model.date_created = now;
     model.last_modified = now;
 
+    done();
     // call the next middleware
     next();
 });
 
 // PRE UPDATE HOOK
-TokenSchema.pre('update', function preUpdateHook(next) {
+TokenSchema.pre('update', true, function preUpdateHook(next, done) {
     debug('[Token Model] Pre-update Hook...')
 
     let model = this;
@@ -50,6 +51,9 @@ TokenSchema.pre('update', function preUpdateHook(next) {
 
     // update the last_modified value current date
     model.last_modified = now;
+    done();
+
+    next();
 
 });
 
