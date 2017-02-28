@@ -1,5 +1,5 @@
 
-var HTTP_PORT = process.env.HTTP_PORT || 8000;
+var HTTP_PORT = process.env.HTTP_PORT || 5100;
 
 module.exports = {
     // HTTP PORT
