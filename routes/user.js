@@ -8,6 +8,7 @@ var authorize		= require('../lib/authorize');
 
 // CREATE A ROUTER
 var router = express.Router();
+
 /**
  * @api {post} /user/signup User Signup
  * @apiDescription User Signup 
