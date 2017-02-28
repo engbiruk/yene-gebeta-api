@@ -156,7 +156,7 @@ exports.logout = function logout(req, res, next) {
 
     // fetch the user id from req object, which is appended on the authenticate middleware
     var userId = req._user;
-    console.log('USER: ', userId);
+    
     if(!userId) {
         // respond error to the request
         res.status(401);    // Unauthorized
