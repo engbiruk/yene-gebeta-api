@@ -1,7 +1,9 @@
 // LOAD MODULE DEPENDENCIES
 var events = require('events');
 var moment = require('moment');
-var debug = require('debug')('yene-gebeta-api');
+var debug = require('debug')('yene-gebeta-api:user-controller');
+var lodash			= require('lodash');
+var _			= require('underscore');
 
 // LOAD CONFIG
 var config = require('../config');
@@ -193,5 +195,46 @@ exports.getAllUsers = function getAllUsers(req, res, next) {
             _users.push(_user);
         });
         res.json(_users);
+    });
+}
+
+/**
+ * GET A USER
+ * 
+ * @params {Object} req Request
+ * @params {Object} res Response
+ * @params {Object} next Next Middleware Dispatcher
+ * 
+ * @return {Object} user A User as Json Object
+ */
+exports.getUser = function getUser(req, res, next){
+    debug('Get a User...');
+
+    // fetch user id
+    var userId = req.params.userId;
+
+    // fetch a user
+    UserDal.get({_id: userId}, function getAUser(err, user){
+        if(err) return next(err);
+        
+        // if the user doesnot exist, return that to the user
+        if(!user._id){
+            res.status(404).json({message: 'User does not exist!'});
+            return;
+        } 
+        
+        // remove unwanted fields from populated user_profile field in the user
+        user.user_profile.omitFields(['user'], function (err, _user_profile){
+            if(err) return next(err);
+            // remove the unwanted fields from the user
+            user.omitFields([], function (err, _user){
+                if(err) return next(err);
+                // replace the user_profile of the user with the removed user_profile
+                _user.user_profile = _user_profile;
+                // return the user to the requester
+                res.status(200).json(_user || {});
+            });
+        });
+        
     });
 }

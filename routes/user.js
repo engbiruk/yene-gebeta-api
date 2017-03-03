@@ -10,7 +10,7 @@ var authorize		= require('../lib/authorize');
 var router = express.Router();
 
 /**
- * @api {post} /user/signup User Signup
+ * @api {post} /users/signup User Signup
  * @apiDescription User Signup 
  * @apiGroup User
  * @apiName User Signup
@@ -20,13 +20,23 @@ var router = express.Router();
  * @apiParam {String} password   Password
  * @apiParam {String} first_name   First Name
  * @apiParam {String} last_name   Last Name
+ * @apiParam {String} date_of_birth   Date of Birth
+ * @apiParam {String} phone_number    Phone Number
+ * @apiParam {String} gender   Gender
+ * @apiParam {String} [about]   About
+ * @apiParam {String} [city] City  
+ * @apiParam {String} [country] Country  
  * @apiParam {String} user_type   User Type  - [normal, client, staff, admin]
  * @apiExample Request Example:
  * {
- *      "username": "johndoe@email.com",
+ *      "email": "johndoe@email.com",
  *      "password": "p@ssw0rd4J0hn_D0e",
  *      "first_name": "John",
  *      "last_name": "Doe",
+ *      "date_of_birth": "1991-11-20",
+ *      "phone_number": "0934470466",
+ *      "gender": "M",
+ *      "about":"About me is here...",
  *      "user_type": "normal"
  * }
  * 
@@ -60,17 +70,166 @@ var router = express.Router();
 // POST /users/signup
 router.post('/signup', user.createUser);
 
+/**
+ * @api {post} /users/login User Login
+ * @apiDescription User Login 
+ * @apiGroup User
+ * @apiName User Login
+ * @apiVersion 1.0.0
+ * 
+ * @apiParam {String} username  Username (Email Address)
+ * @apiParam {String} password   Password
+ * @apiExample Request Example:
+ * {
+ *      "username": "johndoe@email.com",
+ *      "password": "p@ssw0rd4J0hn_D0e"
+ * }
+ * 
+ * @apiSuccess  {String}    token String
+ * @apiSuccess  {Object}    user   User Description
+ * @apiSuccess  {String}    user._id    User Id
+ * @apiSuccess  {String}    user.last_modified    Last Modified Date
+ * @apiSuccess  {String}    user.date_created    Date Created Date
+ * @apiSuccess  {String}    user.username   Username
+ * @apiSuccess  {Object}    user.user_profile   User Profile
+ * @apiSuccess  {String}    user.user_profile._id   User Profile Id
+ * @apiSuccess  {String}    user.user_profile.last_modified    Last Modified Date
+ * @apiSuccess  {String}    user.user_profile.date_created    Date Created Date
+ * @apiSuccess  {String}    user.user_profile.first_name    First Name
+ * @apiSuccess  {String}    user.user_profile.last_name    Last Name
+ * @apiSuccess  {String}    user.user_profile.email    Email
+ * @apiSuccess  {String}    user.user_profile.gender    Gender
+ * @apiSuccess  {String}    user.user_profile.about    About the user
+ * @apiSuccess  {String}    user.user_profile.city    City
+ * @apiSuccess  {String}    user.user_profile.date_of_birth    Date of Birth
+ * @apiSuccess  {String}    user.user_profile.phone_number    Phone Number
+ * @apiSuccess  {String}    user.user_profile.country    Country
+ * @apiSuccess  {String}    user.status    Status
+ * 
+ * @apiSuccessExample Success-Response Example: 
+ * {
+ *  "token": "mG3nb7DDC3kFNQ==",
+ *  "user": {
+ *      "_id": "58b446c44edbf8ddaefdcb92",
+ *      "last_modified": "2017-02-27T15:33:37.232Z",
+ *      "date_created": "2017-02-27T15:33:37.232Z",
+ *      "username": "sosina@gmail.com",
+ *      "user_profile": {
+ *        "_id": "58b446d14edbf8ddaefdcb93",
+ *        "last_modified": "2017-02-27T15:33:37.249Z",
+ *        "date_created": "2017-02-27T15:33:37.249Z",
+ *        "user": "58b446c44edbf8ddaefdcb92",
+ *        "first_name": "Sosina",
+ *        "last_name": "Tilahun",
+ *        "email": "sosina@gmail.com",
+ *        "gender": "M",
+ *        "about": "This is Biruk as a normal user.",
+ *        "city": "Addis Ababa",
+ *        "date_of_birth": "1991-11-20T00:00:00.000Z",
+ *        "phone_number": "+251934470466",
+ *        "country": "Ethiopia"
+ *      },
+ *      "status": "active"
+ * }
+ *
+ * 
+ * @apiError {Boolean} error Indicate Error
+ * @apiError {String} message   Message
+ * @apiErrorExample Error-Response Example:
+ * {
+ *      "error": true,
+ *      "message": "Wrong Credentials!"
+ * }
+ * 
+ */
 // POST /users/login
 router.post('/login', auth.login);
 
+
+/**
+ * @api {post} /users/logout User Logout
+ * @apiDescription User Logout 
+ * @apiGroup User
+ * @apiName User Logout
+ * @apiVersion 1.0.0
+ * 
+ * 
+ * @apiSuccess  {String}    message Message
+ * 
+ * @apiSuccessExample Success-Response Example: 
+ * {
+ *      "message": "User Successfuly logged out!"
+ * }
+ * 
+ * @apiError {Boolean} error Indicate Error
+ * @apiError {String} message   Message
+ * @apiErrorExample Error-Response Example:
+ * {
+ *      "error": true,
+ *      "message": "You need to be logged in to logout!, Use a correct token"
+ * }
+ * 
+ */
 // POST /users/logout
 router.post('/logout', auth.logout);
+
 
 // GET /users/all
 router.get('/all',  user.getAllUsers);
 
+/**
+ * @api {post} /users/:userId Get Single User
+ * @apiDescription Get a single User 
+ * @apiGroup User
+ * @apiName Get User
+ * @apiVersion 1.0.0
+ * 
+ * 
+ * @apiSuccess  {String} _id User Id
+ * @apiSuccess  {String} username Username
+ * @apiSuccess  {Object} user_profile User Profile Description
+ * @apiSuccess  {String} user_profile._id User Profile Id
+ * @apiSuccess  {String} user_profile.first_name First Name
+ * @apiSuccess  {String} user_profile.last_name Last Name
+ * @apiSuccess  {String} user_profile.email Email
+ * @apiSuccess  {String} user_profile.gender Gender
+ * @apiSuccess  {String} user_profile.about About
+ * @apiSuccess  {String} user_profile.city City
+ * @apiSuccess  {String} user_profile.date_of_birth Date of Birth
+ * @apiSuccess  {String} user_profile.phone_number Phone Number
+ * @apiSuccess  {String} user_profile.country Country
+ * @apiSuccess  {String} status User Status
+ * 
+ * @apiSuccessExample Success-Response Example: 
+ * {
+ *   "_id": "58b78f707976f71f0e3170c0",
+ *   "username": "engbiruk@gmail.com",
+ *   "user_profile": {
+ *     "_id": "58b78f707976f71f0e3170c1",
+ *     "first_name": "Biruk",
+ *     "last_name": "Tilahun",
+ *     "email": "engbiruk@gmail.com",
+ *     "gender": "M",
+ *     "about": "This is Biruk as a normal user.",
+ *     "city": "Addis Ababa",
+ *     "date_of_birth": "1991-11-20T00:00:00.000Z",
+ *     "phone_number": "+251934470466",
+ *     "country": "Ethiopia"
+ *   },
+ *   "status": "active"
+ * }
+ * 
+ * @apiError {Boolean} error Indicate Error
+ * @apiError {String} message   Message
+ * @apiErrorExample Error-Response Example:
+ * {
+ *      "error": true,
+ *      "message": "You need to be logged in to logout!, Use a correct token"
+ * }
+ * 
+ */
 // GET /users/:userId
-router.get('/:userId', user.noop);
+router.get('/:userId', user.getUser);
 
 // PUT /users/:userId
 router.put('/:userId', user.noop);

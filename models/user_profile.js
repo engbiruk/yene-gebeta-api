@@ -2,7 +2,8 @@
 var mongoose = require('mongoose');
 var moment = require('moment');
 var bcrypt = require('bcrypt');
-var debug = require('debug')('yene-gebeta');
+var debug = require('debug')('yene-gebeta-api:User_profile-model');
+var _			= require('underscore');
 
 // LOAD CONFIG
 var config = require('../config');
@@ -60,4 +61,22 @@ User_profileSchema.pre('update', function preUpdateHook(next) {
 
 });
 
+// OMIT RETURNING FIELDS
+User_profileSchema.methods.omitFields = function omitFields(fields, callback){
+
+    if(!fields || !Array.isArray(fields)){
+        throw new Error("'Field' parameter should be Array");
+    }
+
+    // convers model to json
+    var _user_profile = this.toJSON();
+    
+    // add the default ommited fields 
+    fields.push(['password', '__v', 'last_modified', 'date_created']);
+    
+    // filter the fields
+    _user_profile = _.omit(_user_profile, fields);
+    
+    callback(null, _user_profile);
+}
 module.exports = mongoose.model('User_profile', User_profileSchema);

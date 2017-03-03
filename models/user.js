@@ -2,7 +2,8 @@
 var mongoose = require('mongoose');
 var moment = require('moment');
 var bcrypt = require('bcrypt');
-var debug = require('debug')('yene-gebeta-api');
+var debug = require('debug')('yene-gebeta-api:user-model');
+var _			= require('underscore');
 
 // LOAD CONFIG
 var config = require('../config');
@@ -78,5 +79,24 @@ UserSchema.methods.checkPassword = function checkPassword(password, callback) {
         callback(null, res);
     });
 };
+
+// OMIT RETURNING FIELDS
+UserSchema.methods.omitFields = function omitFields(fields, callback){
+
+    if(!fields || !Array.isArray(fields)){
+        throw new Error("'Field' parameter should be Array");
+    }
+
+    // convers model to json
+    var _user = this.toJSON();
+    
+    // add the default ommited fields 
+    fields.push(['password', '__v', 'last_modified', 'date_created', 'role', 'realm', 'last_login']);
+    
+    // filter the fields
+    _user = _.omit(_user, fields);
+    
+    callback(null, _user);
+}
 
 module.exports = mongoose.model('User', UserSchema);

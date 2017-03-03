@@ -1,5 +1,5 @@
 
-var HTTP_PORT = process.env.HTTP_PORT || 5100;
+var HTTP_PORT = process.env.HTTP_PORT || 8000;
 
 module.exports = {
     // HTTP PORT
@@ -9,10 +9,10 @@ module.exports = {
     MONGODB_URL: 'mongodb://localhost/yene-gebeta',
 
     // SALT LENGTH
-    SALT_LENGTH: 17,
+    SALT_LENGTH: 3,
 
     // TOKEN LENGTH
-    TOKEN_LENGTH: 10,
+    TOKEN_LENGTH: 8,
 
     // AUTHENTICATION REALM
     REALM: 'Bearer',

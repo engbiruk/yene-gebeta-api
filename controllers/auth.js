@@ -2,6 +2,7 @@
 var events = require('events');
 var moment = require('moment');
 var debug = require('debug')('yene-gebeta-api:auth-controller');
+var _			= require('lodash');
 var crypto			= require('crypto');
 
 // LOAD CONFIG
@@ -131,15 +132,20 @@ exports.login = function login(req, res, next) {
         UserDal.update({ _id: user._id }, { last_login: now }, function updateLogin(err, user) {
             if(err) return next(err);
             
+            //res.before(function(){}); 
+            
             // create a user JSON object
-            user = user.toJSON();
+            //user = user.toJSON();
             // remove password, realm and role
-            delete user.password; delete user.realm; delete user.role;
+            //delete user.password; delete user.realm; delete user.role;
             // respond 
-            res.json({
+            //res.exclude(['user.password'])
+            var _jsonResponse = {
                 token: token,
                 user: user
-            });
+            };
+            //res.exclude(['']);
+            res.json(_jsonResponse);
         });
     });
 
