@@ -57,4 +57,23 @@ TokenSchema.pre('update', true, function preUpdateHook(next, done) {
 
 });
 
+// OMIT RETURNING FIELDS
+TokenSchema.methods.omitFields = function omitFields(fields, callback){
+
+    if(!fields || !Array.isArray(fields)){
+        throw new Error("'Field' parameter should be Array");
+    }
+
+    // convers model to json
+    var _token = this.toJSON();
+    
+    // add the default ommited fields 
+    fields.push(['password', '__v', 'last_modified', 'date_created', 'role', 'realm', 'last_login']);
+    
+    // filter the fields
+    _token = _.omit(_token, fields);
+    
+    callback(null, _token);
+}
+
 module.exports = mongoose.model('Token', TokenSchema);

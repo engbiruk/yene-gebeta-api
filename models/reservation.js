@@ -24,7 +24,7 @@ var ReservationSchema = new Schema({
 
    // references
    user_profile: { type: ObjectId, ref:'User_profile' },
-   restaurant: { type: ObjectId, ref:'Restaurant' }
+   place: { type: ObjectId, ref:'Place' }
 });
 
 // PRE SAVE HOOK
@@ -54,5 +54,24 @@ ReservationSchema.pre('update', function preUpdateHook(next){
     model.last_modified = now;
 
 });
+
+// OMIT RETURNING FIELDS
+ReservationSchema.methods.omitFields = function omitFields(fields, callback){
+
+    if(!fields || !Array.isArray(fields)){
+        throw new Error("'Field' parameter should be Array");
+    }
+
+    // convers model to json
+    var _reservation = this.toJSON();
+    
+    // add the default ommited fields 
+    fields.push(['password', '__v', 'last_modified', 'date_created', 'role', 'realm', 'last_login']);
+    
+    // filter the fields
+    _reservation = _.omit(_reservation, fields);
+    
+    callback(null, _reservation);
+}
 
 module.exports = mongoose.model('Reservation', ReservationSchema);

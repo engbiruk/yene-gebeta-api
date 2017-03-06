@@ -24,7 +24,7 @@ var ReviewSchema = new Schema({
    // references
    user_profile: { type: ObjectId, ref:'User_profile' },
    image: [{ type: ObjectId, ref:'Image' }],
-   restaurant: { type: ObjectId, ref:'Restaurnat' }
+   place: { type: ObjectId, ref:'Place' }
 });
 
 // PRE SAVE HOOK
@@ -54,5 +54,24 @@ ReviewSchema.pre('update', function preUpdateHook(next){
     model.last_modified = now;
 
 });
+
+// OMIT RETURNING FIELDS
+ReviewSchema.methods.omitFields = function omitFields(fields, callback){
+
+    if(!fields || !Array.isArray(fields)){
+        throw new Error("'Field' parameter should be Array");
+    }
+
+    // convers model to json
+    var _review = this.toJSON();
+    
+    // add the default ommited fields 
+    fields.push(['password', '__v', 'last_modified', 'date_created', 'role', 'realm', 'last_login']);
+    
+    // filter the fields
+    _review = _.omit(_review, fields);
+    
+    callback(null, _review);
+}
 
 module.exports = mongoose.model('Review', ReviewSchema);

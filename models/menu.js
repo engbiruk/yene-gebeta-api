@@ -25,7 +25,7 @@ var MenuSchema = new Schema({
    // references
    menu_category: { type: ObjectId, ref:'Menu_category' },
    image: [{ type: ObjectId, ref:'Image' }],
-   restaurant: { type: ObjectId, ref:'Restaurant' }
+   place: { type: ObjectId, ref:'Place' }
 });
 
 // PRE SAVE HOOK
@@ -55,5 +55,24 @@ MenuSchema.pre('update', function preUpdateHook(next){
     model.last_modified = now;
 
 });
+
+// OMIT RETURNING FIELDS
+MenuSchema.methods.omitFields = function omitFields(fields, callback){
+
+    if(!fields || !Array.isArray(fields)){
+        throw new Error("'Field' parameter should be Array");
+    }
+
+    // convers model to json
+    var _menu = this.toJSON();
+    
+    // add the default ommited fields 
+    fields.push(['password', '__v', 'last_modified', 'date_created', 'role', 'realm', 'last_login']);
+    
+    // filter the fields
+    _menu = _.omit(_menu, fields);
+    
+    callback(null, _menu);
+}
 
 module.exports = mongoose.model('Menu', MenuSchema);

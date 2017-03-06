@@ -11,16 +11,16 @@ var Image			= require('../models/image');
 
 // LOAD POPULATED AND RETURN FIELDS
 var population = [{
-    path: 'Menu'
+    path: 'menu'
 },
 {
-    path: 'Restaurant'
+    path: 'place'
 },
 {
-    path: 'User_profile'
+    path: 'user_profile'
 },
 {
-    path: 'Review'
+    path: 'review'
 }];
 
 /**

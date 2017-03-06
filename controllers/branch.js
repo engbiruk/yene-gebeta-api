@@ -1,7 +1,7 @@
 // LOAD MODULE DEPENDECIES
 var events			= require('events');
 var crypto			= require('crypto');
-var debug			= require('debug')('yene-gebeta-api');
+var debug			= require('debug')('yene-gebeta-api:branch-controller');
 var moment			= require('moment');
 
 // LOAD CONFIG

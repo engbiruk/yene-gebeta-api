@@ -51,4 +51,23 @@ Menu_categorySchema.pre('update', function preUpdateHook(next){
 
 });
 
+// OMIT RETURNING FIELDS
+Menu_categorySchema.methods.omitFields = function omitFields(fields, callback){
+
+    if(!fields || !Array.isArray(fields)){
+        throw new Error("'Field' parameter should be Array");
+    }
+
+    // convers model to json
+    var _menu_category = this.toJSON();
+    
+    // add the default ommited fields 
+    fields.push(['password', '__v', 'last_modified', 'date_created', 'role', 'realm', 'last_login']);
+    
+    // filter the fields
+    _menu_category = _.omit(_menu_category, fields);
+    
+    callback(null, _menu_category);
+}
+
 module.exports = mongoose.model('Menu_category', Menu_categorySchema);

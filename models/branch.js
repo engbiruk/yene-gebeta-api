@@ -23,7 +23,7 @@ var BranchSchema = new Schema({
    last_modified: { type: Date },
 
    // reference
-   restaurant: { type: ObjectId, ref:'Restaurant' }
+   place: { type: ObjectId, ref:'Place' }
 });
 
 // PRE SAVE HOOK
@@ -53,5 +53,24 @@ BranchSchema.pre('update', function preUpdateHook(next){
     model.last_modified = now;
 
 });
+
+// OMIT RETURNING FIELDS
+BranchSchema.methods.omitFields = function omitFields(fields, callback){
+
+    if(!fields || !Array.isArray(fields)){
+        throw new Error("'Field' parameter should be Array");
+    }
+
+    // convers model to json
+    var _branch = this.toJSON();
+    
+    // add the default ommited fields 
+    fields.push(['password', '__v', 'last_modified', 'date_created', 'role', 'realm', 'last_login']);
+    
+    // filter the fields
+    _branch = _.omit(_branch, fields);
+    
+    callback(null, _branch);
+}
 
 module.exports = mongoose.model('Branch', BranchSchema);

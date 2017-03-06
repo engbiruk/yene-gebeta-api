@@ -11,13 +11,13 @@ var Review			= require('../models/review');
 
 // LOAD POPULATED AND RETURN FIELDS
 var population = [{
-    path: 'User_profile'
+    path: 'user_profile'
 },
 {
-    path: 'Image'
+    path: 'image'
 },
 {
-    path: 'Restaurant'
+    path: 'place'
 }];
 
 /**

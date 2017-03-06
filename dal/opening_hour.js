@@ -11,7 +11,7 @@ var Opening_hour			= require('../models/opening_hour');
 
 // LOAD POPULATED AND RETURN FIELDS
 var population = [{
-    path: 'Restaurant'
+    path: 'place'
 }];
 
 /**

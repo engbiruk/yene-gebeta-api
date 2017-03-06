@@ -14,7 +14,7 @@ var population = [{
     path: 'User_profile'
 },
 {
-    path: 'Restaurant'
+    path: 'place'
 }];
 
 /**

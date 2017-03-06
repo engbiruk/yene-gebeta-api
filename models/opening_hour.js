@@ -40,7 +40,7 @@ var Opening_hourSchema = new Schema({
    last_modified: { type: Date },
 
    // references
-   restaurant: { type: ObjectId, ref:'Restaurant' }
+   place: { type: ObjectId, ref:'Place' }
 
 });
 
@@ -71,5 +71,24 @@ Opening_hourSchema.pre('update', function preUpdateHook(next){
     model.last_modified = now;
 
 });
+
+// OMIT RETURNING FIELDS
+Opening_hourSchema.methods.omitFields = function omitFields(fields, callback){
+
+    if(!fields || !Array.isArray(fields)){
+        throw new Error("'Field' parameter should be Array");
+    }
+
+    // convers model to json
+    var _opening_hour = this.toJSON();
+    
+    // add the default ommited fields 
+    fields.push(['password', '__v', 'last_modified', 'date_created', 'role', 'realm', 'last_login']);
+    
+    // filter the fields
+    _opening_hour = _.omit(_opening_hour, fields);
+    
+    callback(null, _opening_hour);
+}
 
 module.exports = mongoose.model('Opening_hour', Opening_hourSchema);

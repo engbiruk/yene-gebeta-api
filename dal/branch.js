@@ -11,7 +11,7 @@ var Branch = require('../models/branch');
 
 // LOAD POPULATED AND RETURN FIELDS
 var population = [{
-    path: 'Restaurant'
+    path: 'place'
 }];
 
 /**
