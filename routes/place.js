@@ -15,13 +15,15 @@ router.post('/', place.createPlace);
 // DELETE /places/:placeId
 router.delete('/:placeId', place.noop);
 
-// GET /places/:placeId
-router.get('/:placeId', place.getPlace);
+
 
 // PUT /places/:placeId
 router.put('/:placeId', place.noop);
 
 // GET /places/all
-router.get('/all', place.noop);
+router.get('/all', place.getAllPlaces);
+
+// GET /places/:placeId
+router.get('/:placeId', place.getPlace);
 
 module.exports = router;

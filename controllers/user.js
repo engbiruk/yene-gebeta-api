@@ -2,8 +2,8 @@
 var events = require('events');
 var moment = require('moment');
 var debug = require('debug')('yene-gebeta-api:user-controller');
-var lodash			= require('lodash');
-var _			= require('underscore');
+var lodash = require('lodash');
+var _ = require('underscore');
 
 // LOAD CONFIG
 var config = require('../config');
@@ -85,15 +85,15 @@ exports.createUser = function createUser(req, res, next) {
     });
 
     // [Workflow] 2. Check if the user already exist
-    workflow.on('checkIfUserExist', function checkUserExist(){
+    workflow.on('checkIfUserExist', function checkUserExist() {
         debug('[User Controller: Create User][Workflow: checkIfUserExist] check if the user exists...');
 
         // Check if the user already exists in the database (checking the username from the submitted email)
-        UserDal.get({username: body.email}, function getUser(err, user){
-            if(err) return next(err);
-            
+        UserDal.get({ username: body.email }, function getUser(err, user) {
+            if (err) return next(err);
+
             // if user exist response back
-            if(user._id) {
+            if (user._id) {
                 res.status(400); // Bad Request
                 res.json({
                     message: 'The email is already taken. Please use another email!'
@@ -142,12 +142,12 @@ exports.createUser = function createUser(req, res, next) {
             date_of_birth: body.date_of_birth,
             phone_number: body.phone_number
         }, function callback(err, user_profile) {
-            if(err) return next(err);
+            if (err) return next(err);
 
             // Update back the user's user_profile id
             UserDal.update({ _id: user._id }, { user_profile: user_profile._id }, function callback1(err, user) {
-                if(err) return next(err);
-                
+                if (err) return next(err);
+
                 // if there is no err, got to the next workflow (respond back to the request)
                 workflow.emit('respond', user);
 
@@ -183,18 +183,30 @@ exports.createUser = function createUser(req, res, next) {
 exports.getAllUsers = function getAllUsers(req, res, next) {
     debug('[User Controller] Get all users');
 
-    UserDal.getCollection({}, function getAllUsersCollection(err, users){
-        if(err) return next(err);
-        
+    UserDal.getCollection({}, function getAllUsersCollection(err, users) {
+        if (err) return next(err);
+
         // return all the users for the requester
-        res.status(200);
         var _users = [];
-        users.forEach(function getUser(user){
-            var _user = user.toJSON();
-            delete _user.password; delete _user.realm; delete _user.role;
-            _users.push(_user);
+        users.forEach(function getUser(user) {
+            // remove unwanted fields from populated user_profile field in the user
+            user.user_profile.omitFields(['user'], function (err, _user_profile) {
+                if (err) return next(err);
+                // remove the unwanted fields from the user
+                user.omitFields([], function (err, _user) {
+                    if (err) return next(err);
+                    // replace the user_profile of the user with the removed user_profile
+                    _user.user_profile = _user_profile;
+                    // return the user to the requester
+                    _users.push(_user);
+                    //res.status(200).json(_user || {});
+                });
+            });
+            // var _user = user.toJSON();
+            // delete _user.password; delete _user.realm; delete _user.role;
+            // _users.push(_user);
         });
-        res.json(_users);
+        res.status(200).json(_users);
     });
 }
 
@@ -207,34 +219,34 @@ exports.getAllUsers = function getAllUsers(req, res, next) {
  * 
  * @return {Object} user A User as Json Object
  */
-exports.getUser = function getUser(req, res, next){
+exports.getUser = function getUser(req, res, next) {
     debug('Get a User...');
 
     // fetch user id
     var userId = req.params.userId;
 
     // fetch a user
-    UserDal.get({_id: userId}, function getAUser(err, user){
-        if(err) return next(err);
-        
+    UserDal.get({ _id: userId }, function getAUser(err, user) {
+        if (err) return next(err);
+
         // if the user doesnot exist, return that to the user
-        if(!user._id){
-            res.status(404).json({message: 'User does not exist!'});
+        if (!user._id) {
+            res.status(404).json({ message: 'User does not exist!' });
             return;
-        } 
-        
+        }
+
         // remove unwanted fields from populated user_profile field in the user
-        user.user_profile.omitFields(['user'], function (err, _user_profile){
-            if(err) return next(err);
+        user.user_profile.omitFields(['user'], function (err, _user_profile) {
+            if (err) return next(err);
             // remove the unwanted fields from the user
-            user.omitFields([], function (err, _user){
-                if(err) return next(err);
+            user.omitFields([], function (err, _user) {
+                if (err) return next(err);
                 // replace the user_profile of the user with the removed user_profile
                 _user.user_profile = _user_profile;
                 // return the user to the requester
                 res.status(200).json(_user || {});
             });
         });
-        
+
     });
 }

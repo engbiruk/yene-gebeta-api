@@ -3,7 +3,7 @@ var mongoose = require('mongoose');
 var moment = require('moment');
 var bcrypt = require('bcrypt');
 var debug = require('debug')('yene-gebeta-api:place-model');
-
+var _ = require('underscore');
 // LOAD CONFIG
 var config = require('../config');
 
@@ -58,8 +58,8 @@ var PlaceSchema = new Schema({
     // reference
     logo: {type: ObjectId, ref: 'Image'},
     destination: {type: ObjectId, ref: 'Destination'}, 
-    feature: [{type:ObjectId, ref: 'Place_feature'}],
-    category: { type: ObjectId, ref: 'Place_category' },
+    place_feature: [{type:ObjectId, ref: 'Place_feature'}],
+    place_category: { type: ObjectId, ref: 'Place_category' },
     image: [{ type: ObjectId, ref: 'Image' }],
     branch: [{ type: ObjectId, ref: 'Branch' }],
     reservation: [{ type: ObjectId, ref: 'Reservation' }],

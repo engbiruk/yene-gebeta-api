@@ -11,9 +11,37 @@ var Place			= require('../models/place');
 
 // LOAD POPULATED AND RETURN FIELDS
 var population = [
-    {path: 'category'},{path: 'destination'},{path: 'logo'},{path: 'image'},{path: 'branch'},{path: 'reservation'},{path: 'ppening_hours'},{path: 'menu'},{path: 'review'}
+    // {path: 'place_category'},
+    // {path: 'destination'},
+    // {path: 'image'},
+    // {path: 'branch'},
+    // {path: 'reservation'},
+    // {path: 'opening_hours'},
+    // {path: 'menu'},
+    // {path: 'review'}
 ];
 
+/**
+ * GET A RESTAURANT
+ * 
+ * @desc fetch a place info from the database using a query object passed
+ * @param {Object} query Query Object
+ * @param {Function} callback a callback function after geting place info from the database
+ * 
+ */
+exports.get = function get(query, callback) {
+    debug('[Place DAL] Getting a place: ' + query);
+
+    Place
+        .findOne(query)     // find the place profile from the query
+        .populate(population)   // populate with a Place_profile model link
+        .exec(function getPlace(err, place){
+            if(err) return callback(err);
+            
+            // return the place to the callback function. return empity object if the place doesn't exist in the database
+            callback(null, place || {});
+        });
+};
 /**
  * CREATE A NEW RESTAURANT
  * 
@@ -38,7 +66,7 @@ exports.create = function create(placeData, callback) {
             // callback the place data if the place exists or send empity object if it doesn't
             callback(null, place || {});
         });
-
+ 
     });
 };
 
@@ -72,27 +100,7 @@ exports.delete = function remove(query, callback) {
         });
 };
 
-/**
- * GET A RESTAURANT
- * 
- * @desc fetch a place info from the database using a query object passed
- * @param {Object} query Query Object
- * @param {Function} callback a callback function after geting place info from the database
- * 
- */
-exports.get = function get(query, callback) {
-    debug('[Place DAL] Geting a place: ' + query);
 
-    Place
-        .findOne(query)     // find the place profile from the query
-        .populate(population)   // populate with a Place_profile model link
-        .exec(function getPlace(err, place){
-            if(err) return callback(err);
-            
-            // return the place to the callback function. return empity object if the place doesn't exist in the database
-            callback(null, place || {});
-        });
-};
 
 /**
  * UPDATE A RESTAURANT
