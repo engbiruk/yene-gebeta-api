@@ -3,11 +3,12 @@
  */
 
 // LOAD MODULE DEPEDENCIES
-var debug			= require('debug')('yene-gebeta-api:place-dal');
-var moment			= require('moment');
+var debug = require('debug')('yene-gebeta-api:place-dal');
+var moment = require('moment');
+var _			= require('underscore');
 
 // LOAD MODELS
-var Place			= require('../models/place');
+var Place = require('../models/place');
 
 // LOAD POPULATED AND RETURN FIELDS
 var population = [
@@ -19,6 +20,7 @@ var population = [
     // {path: 'opening_hours'},
     // {path: 'menu'},
     // {path: 'review'}
+    { path: 'logo' }
 ];
 
 /**
@@ -35,9 +37,9 @@ exports.get = function get(query, callback) {
     Place
         .findOne(query)     // find the place profile from the query
         .populate(population)   // populate with a Place_profile model link
-        .exec(function getPlace(err, place){
-            if(err) return callback(err);
-            
+        .exec(function getPlace(err, place) {
+            if (err) return callback(err);
+
             // return the place to the callback function. return empity object if the place doesn't exist in the database
             callback(null, place || {});
         });
@@ -57,16 +59,16 @@ exports.create = function create(placeData, callback) {
     var placeModel = new Place(placeData);
 
     // save the new place model to the database
-    placeModel.save(function savePlace(err, data){
-        if(err) return callback(err);
-        
+    placeModel.save(function savePlace(err, data) {
+        if (err) return callback(err);
+
         // check if the comming data is indeed a place data
-        exports.get({_id: data._id}, function (err, place){
-            if(err) return callback(err);
+        exports.get({ _id: data._id }, function (err, place) {
+            if (err) return callback(err);
             // callback the place data if the place exists or send empity object if it doesn't
             callback(null, place || {});
         });
- 
+
     });
 };
 
@@ -84,15 +86,15 @@ exports.delete = function remove(query, callback) {
     Place
         .findOne(query)     // find the place from the query
         .populate(population)   // populate with a Place_profile model link
-        .exec(function deletePlace(err, place){   // executes the query
-            if(err) return callback(err);
-            
+        .exec(function deletePlace(err, place) {   // executes the query
+            if (err) return callback(err);
+
             // if the place is not set sed a callback empity object (the object is predeleted or doesn't exist)
-            if(!place) return callback(null, {});
+            if (!place) return callback(null, {});
 
             // if the place exist, try removing it from the database
-            place.remove(function removePlace(err){
-                if(err) return callback(err);
+            place.remove(function removePlace(err) {
+                if (err) return callback(err);
 
                 // return the place to the callback
                 callback(null, place);
@@ -120,9 +122,9 @@ exports.update = function update(query, updates, callback) {
     Place
         .findOneAndUpdate(query, updates) // find the place from the query and updates them with new updates
         .populate(population)   // populate with a Place_profile model link
-        .exec(function updatePlace(err, place){
-            if(err) return callback(err);
-            
+        .exec(function updatePlace(err, place) {
+            if (err) return callback(err);
+
             // return the updated place to the callback function and send an empity object if the place doesn't exist anymore
             callback(null, place || {});
         });
@@ -140,12 +142,29 @@ exports.getCollection = function getACollectionOfPlaces(query, callback) {
     debug('[Place DAL] fetching a collection of places', query);
 
     Place
-    .find(query)
-    .populate(population)
-    .exec(function getPlacesCollection(err, places){
-        if(err) return callback(err);
-        
-        // return places to the callback function
-        callback(null, places || {});
-    });
+        .find(query)
+        .populate(population)
+        .exec(function getPlacesCollection(err, places) {
+            if (err) return callback(err);
+
+            var _places = [];
+            places.forEach(function (place) {
+
+                place.omitFields([], function (err, _place) {
+                    if (err) return next(err);
+
+                    // if logo is defined
+                    if(place.logo){
+                        var _logo = place.logo.toJSON();
+                        // filter the fields
+                        _place.logo = _.omit(_place.logo, ['__v', 'last_modified', 'date_created']);
+                    }
+                    
+                    // push to _places
+                    _places.push(_place);
+                });
+            });
+            // return places to the callback function
+            callback(null, _places || {});
+        });
 };

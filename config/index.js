@@ -20,5 +20,11 @@ module.exports = {
     // USER TYPES
     USER_TYPES: [
         'normal', 'client', 'staff', 'admin'
-    ]
-};
+    ],
+
+    // STATIC FILES PATH
+    STATIC_FILES: './public',
+
+    // LOGO FILES STORAGE PATH
+    LOGO_PATH: '/placesLogo/'
+}; 

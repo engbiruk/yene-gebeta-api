@@ -33,3 +33,4 @@ npm-debug.log
 media/**/*
 docs/
 ./node_modules
+public/

@@ -10,18 +10,21 @@ var moment			= require('moment');
 var Image			= require('../models/image');
 
 // LOAD POPULATED AND RETURN FIELDS
-var population = [{
-    path: 'menu'
-},
+var population = [
+// {
+//     path: 'menu'
+// },
 {
     path: 'place'
-},
-{
-    path: 'user_profile'
-},
-{
-    path: 'review'
-}];
+}
+// ,
+// {
+//     path: 'user_profile'
+// },
+// {
+//     path: 'review'
+// }
+];
 
 /**
  * CREATE A NEW IMAGE

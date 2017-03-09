@@ -2,6 +2,7 @@
 var events = require('events');
 var moment = require('moment');
 var debug = require('debug')('yene-gebeta-api:place-controller');
+var _ = require('underscore');
 
 // LOAD CONFIG
 var config = require('../config');
@@ -194,25 +195,16 @@ exports.getAllPlaces = function getAllPlaces(req, res, next) {
     debug('Get all Places...');
 
     // fetch a Place
-    PlaceDal.getCollection({}, function getAllPlaces(err, Places) {
+    PlaceDal.getCollection({}, function getAllPlaces(err, places) {
         if (err) return next(err);
-
+        
         // if the Place doesnot exist, return that to the Place
-        if (!Array.isArray(Places)) {
+        if (!Array.isArray(places)) {
             res.status(404).json({ message: 'No Places Found!' });
             return;
         }
-        var _places = Array();
-        Places.forEach(function (place) {
-            // remove unwanted fields from populated Place_profile field in the Place
-            place.omitFields([], function (err, _Place) {
-                if (err) return next(err);
-
-                // return the Place to the requester
-                _places.push(_Place);
-            });
-        });
-        res.status(200).json(_places || {});
+        
+        res.status(200).json(places || {});
 
     });
 }

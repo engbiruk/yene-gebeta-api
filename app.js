@@ -8,6 +8,8 @@ var unless			    = require('express-unless');
 var bafMiddleware       = require('before-and-after');
 var partialResponse     = require('express-partial-response');
 var lodash			    = require('lodash');
+// var multer              = require('multer');
+// var upload              = multer({ dest: '../placesLogo/' });
 
 // LOAD APP CONFIGRATION
 var config			    = require('./config');
@@ -38,7 +40,7 @@ mongoose.connection.on('error', function mongodbConnectionListener() {
 var app = express();
 
 // MIDDLEWARES
-
+app.use(express.static('public'));
 // set authentication middleware
 app.use(authenticate().unless({
     // paths that are authentication is waved
@@ -47,6 +49,9 @@ app.use(authenticate().unless({
 
 // set body parser middleware
 app.use(bodyparser.json());
+
+// static files
+
 
 // partial response middleware
 app.use(partialResponse());
