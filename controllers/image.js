@@ -4,6 +4,7 @@ var moment = require('moment');
 var debug = require('debug')('yene-gebeta-api:image-controller');
 var multer = require('multer');
 var fs = require('fs');
+var mongoose = require('mongoose');
 
 // LOAD CONFIG
 var config = require('../config');
@@ -37,7 +38,7 @@ exports.noop = function noop(req, res, next) {
 var upload = multer({
     dest: config.STATIC_FILES + config.LOGO_PATH, inMemory: true, //storage: storage,
     fileFilter: function (req, file, cb) {
-        console.log(file);
+
         if (!file.originalname.match(/\.(jpg|jpeg|png)$/)) {
             return cb(new Error("Only image files (jpg|jpeg|png) are Allowed!"));
         };
@@ -47,7 +48,7 @@ var upload = multer({
 
         cb(null, true);
     }
-}).single('logo'); 
+}).single('logo');
 exports.uploadPlaceLogo = function uploadPlaceLogo(req, res, next) {
 
     upload(req, res, function (err) {
@@ -59,31 +60,42 @@ exports.uploadPlaceLogo = function uploadPlaceLogo(req, res, next) {
 
         var file = req.file;
 
-        // get the extension of the file name
-        var re = /(?:\.([^]+))?$/;
-        var ext = file.originalname.substr(file.originalname.lastIndexOf('.')+1);//re.exec(file.originalname);
-        console.log(ext);
-        
-        if (!ext) {
-            cb(new Error("The extenstion (jpg|jpeg|png) of the file must be set!"));
+        if (!file) {
+            res.status(400).json({ message: 'Please specify the file you are going to upload.' });
             return;
+        }
+
+        // get the extension of the file name
+        var ext = file.originalname.substr(file.originalname.lastIndexOf('.') + 1);
+
+        if (!ext) {
+            return next(new Error("The extenstion (jpg|jpeg|png) of the file must be set!"));
         }
         // rename the file name
         file.path = config.STATIC_FILES + config.LOGO_PATH + file.filename + '.' + ext;
         file.relativePath = config.LOGO_PATH + file.filename + '.' + ext;
-        
-        fs.rename(config.STATIC_FILES + config.LOGO_PATH + file.filename, file.path, function (err) {
-            if (err) return cb(err);
 
+        fs.rename(config.STATIC_FILES + config.LOGO_PATH + file.filename, file.path, function (err) {
+            if (err) return next(err);
+            // check if the Id is a vaid id if not throw an error
+            if (!mongoose.Types.ObjectId.isValid(req.params.placeId)) {
+                res.status(400).json({ message: "Wrong placeId!!!" });
+                return;
+            }
             // check of the place exist with that id
             PlaceDal.get({ _id: req.params.placeId }, function getPlace(err, place) {
                 if (err) return next(err);
 
                 if (!place._id) {
-                    fs.unlink(file.path, function (){});
-                    res.status(404).json({ message: "No place found with the id: " + req.params.placeId });
+                    fs.unlink(file.path, function (err) {
+                        if (err) return next(err);
+                        //return next(new Error("No place found with the id: " + req.params.placeId ))
+                        res.status(404).json({ message: "No place found with the id: " + req.params.placeId });
+
+                    });
+                    return;
                 }
-                console.log("==== = = = = = ", file.path);
+
                 // create an image
                 ImageDal.create({
                     title: req.body.title ? req.body.title : place.name + "-logo",

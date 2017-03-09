@@ -34,3 +34,5 @@ media/**/*
 docs/
 ./node_modules
 public/
+placesLogo/
+.vscode
