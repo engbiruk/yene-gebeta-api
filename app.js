@@ -1,22 +1,23 @@
+"use strict"
 // LOAD MODULE DEPENDENCIES
-var express			    = require('express');
-var mongoose			= require('mongoose');
-var bodyparser			= require('body-parser');
-var debug			    = require('debug')('yene-gebeta-api:app');
-var validator			= require('express-validator');
-var unless			    = require('express-unless');
-var bafMiddleware       = require('before-and-after');
-var partialResponse     = require('express-partial-response');
-var lodash			    = require('lodash');
+var express = require('express');
+var mongoose = require('mongoose');
+var bodyparser = require('body-parser');
+var debug = require('debug')('yene-gebeta-api:app');
+var validator = require('express-validator');
+var unless = require('express-unless');
+var bafMiddleware = require('before-and-after');
+var partialResponse = require('express-partial-response');
+var lodash = require('lodash');
 // var multer              = require('multer');
 // var upload              = multer({ dest: '../placesLogo/' });
 
 // LOAD APP CONFIGRATION
-var config			    = require('./config');
+var config = require('./config');
 
 // LOAD VARIABLES
-var router			    = require('./routes');
-var authenticate		= require('./lib/authenticate');
+var router = require('./routes');
+var authenticate = require('./lib/authenticate');
 
 // MONGODB CONFIGURATION
 
@@ -24,7 +25,7 @@ var authenticate		= require('./lib/authenticate');
 mongoose.connect(config.MONGODB_URL);
 
 // listen to mongodb connection success
-mongoose.connection.on('connected', function mongodbConnectionListener(){
+mongoose.connection.on('connected', function mongodbConnectionListener() {
     debug('[APP] Mongodb Connected Successfuly!');
 });
 
@@ -66,7 +67,7 @@ app.use(validator());
 router(app);
 
 // LISTEN TO HTTP PORT
-app.listen(config.HTTP_PORT, function connectionListner(){
+app.listen(config.HTTP_PORT, function connectionListner() {
     debug('API server running on port %s', config.HTTP_PORT);
 });
 
