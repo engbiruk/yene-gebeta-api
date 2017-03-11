@@ -31,7 +31,7 @@ npm-debug.log
 
 #
 media/**/*
-docs/
+#docs/
 ./node_modules
 public/
 placesLogo/

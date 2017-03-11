@@ -1,0 +1,1 @@
+define({  "name": "yene-gebeta-api",  "version": "1.0.0",  "description": "Yene Gebeta Backend[API] Source Code Using NodeJS",  "sampleUrl": false,  "defaultVersion": "0.0.0",  "apidoc": "0.3.0",  "generator": {    "name": "apidoc",    "time": "2017-03-02T23:50:15.641Z",    "url": "http://apidocjs.com",    "version": "0.17.5"  }});
