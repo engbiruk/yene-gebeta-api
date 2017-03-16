@@ -1,13 +1,26 @@
 // LOAD MODULE DEPENDECIES
-var express			= require('express');
+var express = require('express');
 
 // LOAD CONTROLLERS
-var user			= require('../controllers/user');
-var auth			= require('../controllers/auth');
-var authorize		= require('../lib/authorize');
+var user = require('../controllers/user');
+var auth = require('../controllers/auth');
+var authorize = require('../lib/authorize');
 
 // CREATE A ROUTER
 var router = express.Router();
+
+/**
+ * @apiDefine user500Error
+ *
+ * @apiError somethingWrong Error Occured
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 500 Not Found
+ *     {
+ *       "error": true,
+ *       "message": "Something Went Wrong!"
+ *     }
+ */
 
 /**
  * @api {post} /users/signup User Signup
@@ -20,9 +33,9 @@ var router = express.Router();
  * @apiParam {String} password   Password
  * @apiParam {String} first_name   First Name
  * @apiParam {String} last_name   Last Name
- * @apiParam {String} date_of_birth   Date of Birth
- * @apiParam {String} phone_number    Phone Number
- * @apiParam {String} gender   Gender
+ * @apiParam {String} [date_of_birth]   Date of Birth
+ * @apiParam {String} [phone_number]    Phone Number
+ * @apiParam {String} [gender]   Gender
  * @apiParam {String} [about]   About
  * @apiParam {String} [city] City  
  * @apiParam {String} [country] Country  
@@ -48,13 +61,12 @@ var router = express.Router();
  * @apiSuccess  {String}    date_created    Date Created
  * @apiSuccess  {String}    user_profile   User Profile Id
  * @apiSuccessExample Success-Response Example: 
+ * HTTP/1.1 200 OK
  * {
  *      "_id": "654654fgh564jgh5465s4fg",
  *      "username": "jane@gmail.com",
  *      "role": "normal",
  *      "realm": "user",
- *      "date_created": "2017-02-19T08:57:10.559Z",
- *      "last_modified": "2017-02-19T08:57:10.559Z",
  *      "user_profile": "54654gh65j4g6f4h654jghj"
  * }
  * 
@@ -88,13 +100,9 @@ router.post('/signup', user.createUser);
  * @apiSuccess  {String}    token String
  * @apiSuccess  {Object}    user   User Description
  * @apiSuccess  {String}    user._id    User Id
- * @apiSuccess  {String}    user.last_modified    Last Modified Date
- * @apiSuccess  {String}    user.date_created    Date Created Date
  * @apiSuccess  {String}    user.username   Username
  * @apiSuccess  {Object}    user.user_profile   User Profile
  * @apiSuccess  {String}    user.user_profile._id   User Profile Id
- * @apiSuccess  {String}    user.user_profile.last_modified    Last Modified Date
- * @apiSuccess  {String}    user.user_profile.date_created    Date Created Date
  * @apiSuccess  {String}    user.user_profile.first_name    First Name
  * @apiSuccess  {String}    user.user_profile.last_name    Last Name
  * @apiSuccess  {String}    user.user_profile.email    Email
@@ -107,17 +115,14 @@ router.post('/signup', user.createUser);
  * @apiSuccess  {String}    user.status    Status
  * 
  * @apiSuccessExample Success-Response Example: 
+ * HTTP/1.1 200 OK
  * {
  *  "token": "mG3nb7DDC3kFNQ==",
  *  "user": {
  *      "_id": "58b446c44edbf8ddaefdcb92",
- *      "last_modified": "2017-02-27T15:33:37.232Z",
- *      "date_created": "2017-02-27T15:33:37.232Z",
  *      "username": "sosina@gmail.com",
  *      "user_profile": {
  *        "_id": "58b446d14edbf8ddaefdcb93",
- *        "last_modified": "2017-02-27T15:33:37.249Z",
- *        "date_created": "2017-02-27T15:33:37.249Z",
  *        "user": "58b446c44edbf8ddaefdcb92",
  *        "first_name": "Sosina",
  *        "last_name": "Tilahun",
@@ -157,6 +162,7 @@ router.post('/login', auth.login);
  * @apiSuccess  {String}    message Message
  * 
  * @apiSuccessExample Success-Response Example: 
+ * HTTP/1.1 200 OK
  * {
  *      "message": "User Successfuly logged out!"
  * }
@@ -173,12 +179,48 @@ router.post('/login', auth.login);
 // POST /users/logout
 router.post('/logout', auth.logout);
 
+/**
+ * @api {post} /users/change_password/:userId Change Password
+ * @apiDescription Change a user Password 
+ * @apiGroup User
+ * @apiName User Change Password
+ * @apiVersion 1.0.0
+ * 
+ * @apiParam {String} old_password  Old Password
+ * @apiParam {String} new_password  New Password
+ * @apiExample Request Example:
+ * {
+ *      "old_password": "previP@ssw0rd",
+ *      "new_password": "NeWp@ssw0rd4J0hn_D0e"
+ * }
+ * 
+ * @apiSuccess  {String}    message Message
+ * 
+ * @apiSuccessExample Success-Response Example:
+ * HTTP/1.1 200 OK
+ * {
+ *  "message": "Password Successfuly Changed!",
+ * }
+ *
+ * 
+ * @apiError {Boolean} error Indicate Error
+ * @apiError {String} message   Message
+ * @apiErrorExample Error-Response Example:
+ * {
+ *      "error": true,
+ *      "message": "Something Wrong!"
+ * }
+ * 
+ */
+// POST /users/change_password
+router.post('/change_password/:userId', user.change_password);
+
 
 // GET /users/all
-router.get('/all',  user.getAllUsers);
+router.get('/all', user.getAllUsers);
 
 /**
- * @api {post} /users/:userId Get Single User
+ * @api {get} /users/:userId Get Single User
  * @apiDescription Get a single User 
  * @apiGroup User
  * @apiName Get User
@@ -201,6 +243,7 @@ router.get('/all',  user.getAllUsers);
  * @apiSuccess  {String} status User Status
  * 
  * @apiSuccessExample Success-Response Example: 
+ * HTTP/1.1 200 OK
  * {
  *   "_id": "58b78f707976f71f0e3170c0",
  *   "username": "engbiruk@gmail.com",

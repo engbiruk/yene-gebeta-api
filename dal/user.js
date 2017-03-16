@@ -3,12 +3,12 @@
  */
 
 // LOAD MODULE DEPEDENCIES
-var debug			= require('debug')('yene-gebeta-api:user-dal');
-var moment			= require('moment');
-var bcrypt			= require('bcrypt');
+var debug = require('debug')('yene-gebeta-api:user-dal');
+var moment = require('moment');
+var bcrypt = require('bcrypt');
 
 // LOAD MODELS
-var User			= require('../models/user');
+var User = require('../models/user');
 
 // LOAD POPULATED AND RETURN FIELDS
 var population = [{
@@ -30,12 +30,12 @@ exports.create = function create(userData, callback) {
     var userModel = new User(userData);
 
     // save the new user model to the database
-    userModel.save(function saveUser(err, data){
-        if(err) return callback(err);
-        
+    userModel.save(function saveUser(err, data) {
+        if (err) return callback(err);
+
         // check if the comming data is indeed a user data
-        exports.get({_id: data._id}, function (err, user){
-            if(err) return callback(err);
+        exports.get({ _id: data._id }, function (err, user) {
+            if (err) return callback(err);
             // callback the user data if the user exists or send empity object if it doesn't
             callback(null, user || {});
         });
@@ -57,15 +57,15 @@ exports.delete = function remove(query, callback) {
     User
         .findOne(query)     // find the user from the query
         .populate(population)   // populate with a User_profile model link
-        .exec(function deleteUser(err, user){   // executes the query
-            if(err) return callback(err);
-            
+        .exec(function deleteUser(err, user) {   // executes the query
+            if (err) return callback(err);
+
             // if the user is not set sed a callback empity object (the object is predeleted or doesn't exist)
-            if(!user) return callback(null, {});
+            if (!user) return callback(null, {});
 
             // if the user exist, try removing it from the database
-            user.remove(function removeUser(err){
-                if(err) return callback(err);
+            user.remove(function removeUser(err) {
+                if (err) return callback(err);
 
                 // return the user to the callback
                 callback(null, user);
@@ -87,9 +87,9 @@ exports.get = function get(query, callback) {
     User
         .findOne(query)     // find the user profile from the query
         .populate(population)   // populate with a User_profile model link
-        .exec(function getUser(err, user){
-            if(err) return callback(err);
-            
+        .exec(function getUser(err, user) {
+            if (err) return callback(err);
+
             // return the user to the callback function. return empity object if the user doesn't exist in the database
             callback(null, user || {});
         });
@@ -113,9 +113,9 @@ exports.update = function update(query, updates, callback) {
     User
         .findOneAndUpdate(query, updates) // find the user from the query and updates them with new updates
         .populate(population)   // populate with a User_profile model link
-        .exec(function updateUser(err, user){
-            if(err) return callback(err);
-            
+        .exec(function updateUser(err, user) {
+            if (err) return callback(err);
+
             // return the updated user to the callback function and send an empity object if the user doesn't exist anymore
             callback(null, user || {});
         });
@@ -133,14 +133,14 @@ exports.getCollection = function getACollectionOfUsers(query, callback) {
     debug('[User DAL] fetching a collection of users', query);
 
     User
-    .find(query)
-    .populate(population)
-    .exec(function getUsersCollection(err, users){
-        if(err) return callback(err);
-        
-        // return users to the callback function
-        callback(null, users || {});
-    });
+        .find(query)
+        .populate(population)
+        .exec(function getUsersCollection(err, users) {
+            if (err) return callback(err);
+
+            // return users to the callback function
+            callback(null, users || {});
+        });
 };
 
 

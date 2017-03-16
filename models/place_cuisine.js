@@ -2,7 +2,7 @@
 var mongoose = require('mongoose');
 var moment = require('moment');
 var bcrypt = require('bcrypt');
-var debug = require('debug')('yene-gebeta-api:place_category-model');
+var debug = require('debug')('yene-gebeta-api:place_cuisine-model');
 
 // LOAD CONFIG
 var config = require('../config');
@@ -11,7 +11,7 @@ var config = require('../config');
 var ObjectId = mongoose.Schema.Types.ObjectId;
 var Schema = mongoose.Schema;
 
-var Place_categorySchema = new Schema({
+var Place_cuisineSchema = new Schema({
 
     name: {
         type: String
@@ -31,8 +31,8 @@ var Place_categorySchema = new Schema({
 });
 
 // PRE SAVE HOOK
-Place_categorySchema.pre('save', function preSaveHook(next) {
-    debug('[Place_category Model] Pre-save Hook...')
+Place_cuisineSchema.pre('save', function preSaveHook(next) {
+    debug('[Place_cuisine Model] Pre-save Hook...')
 
     let model = this;
 
@@ -47,8 +47,8 @@ Place_categorySchema.pre('save', function preSaveHook(next) {
 });
 
 // PRE UPDATE HOOK
-Place_categorySchema.pre('update', function preUpdateHook(next) {
-    debug('[Place_category Model] Pre-update Hook...')
+Place_cuisineSchema.pre('update', function preUpdateHook(next) {
+    debug('[Place_cuisine Model] Pre-update Hook...')
 
     let model = this;
     var now = moment().toISOString();
@@ -59,22 +59,22 @@ Place_categorySchema.pre('update', function preUpdateHook(next) {
 });
 
 // OMIT RETURNING FIELDS
-Place_categorySchema.methods.omitFields = function omitFields(fields, callback) {
+Place_cuisineSchema.methods.omitFields = function omitFields(fields, callback) {
 
     if (!fields || !Array.isArray(fields)) {
         throw new Error("'Field' parameter should be Array");
     }
 
     // convers model to json
-    var _place_category = this.toJSON();
+    var _place_cuisine = this.toJSON();
 
     // add the default ommited fields 
     fields.push(['password', '__v', 'last_modified', 'date_created', 'role', 'realm', 'last_login']);
 
     // filter the fields
-    _place_category = _.omit(_place_category, fields);
+    _place_cuisine = _.omit(_place_cuisine, fields);
 
-    callback(null, _place_category);
+    callback(null, _place_cuisine);
 }
 
-module.exports = mongoose.model('Place_category', Place_categorySchema);
+module.exports = mongoose.model('Place_cuisine', Place_cuisineSchema);

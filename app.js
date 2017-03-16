@@ -45,7 +45,12 @@ app.use(express.static('public'));
 // set authentication middleware
 app.use(authenticate().unless({
     // paths that are authentication is waved
-    path: ['/users/login', '/users/signup', '/users/all1']
+    path: ['/users/login', '/users/signup', '/users/all1'
+        // public
+        , '/public/*', '/public/placesLogo/:placesLogo', '/placesLogo/:placesLogo', '/placesLogo/*'
+        // Place    
+        // ,'/users/:userId'
+    ]
 }));
 
 // set body parser middleware

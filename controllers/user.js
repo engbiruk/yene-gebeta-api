@@ -4,6 +4,8 @@ var moment = require('moment');
 var debug = require('debug')('yene-gebeta-api:user-controller');
 var lodash = require('lodash');
 var _ = require('underscore');
+var mongoose = require('mongoose');
+var validator = require('express-validator');
 
 // LOAD CONFIG
 var config = require('../config');
@@ -161,15 +163,13 @@ exports.createUser = function createUser(req, res, next) {
     workflow.on('respond', function respond(user) {
         debug('[User Controller: Create User][Workflow: respond] respond to the request...');
 
-        // create a json object
-        user = user.toJSON();
-
         // remove user's password, last_login abd realm info to be send as a respond
-        delete user.password, user.last_login, user.realm;
-
-        // send back a respond
-        res.status(201); // Created
-        res.json(user); // send the user
+        user.omitFields(['password', 'last_login', 'realm'], function (err, user) {
+            // send back a respond
+            res.status(201); // Created
+            res.json(user); // send the user
+        });
+        return;
     });
 
     // [Workflow] Emit to a Validation workflow
@@ -249,4 +249,78 @@ exports.getUser = function getUser(req, res, next) {
         });
 
     });
+}
+
+/**
+ * CHANGE A PASSWORD OF A USER
+ * 
+ * @params {Object} req Request
+ * @params {Object} res Response
+ * @params {Object} next Next Middleware Dispatcher
+ * 
+ * @return {Json} message A message saying password is changed or not
+ */
+exports.change_password = function change_password(req, res, next) {
+    debug('Change User Password...');
+
+    var workflow = new events.EventEmitter();
+    var body = req.body;
+    var user_id = req.params.userId;
+
+    // check if the parameters are correct
+    workflow.on('validateParameters', function validateParameters() {
+        // First check if the user id is for real objectId 
+        if (!mongoose.Types.ObjectId.isValid(user_id)) {
+            res.status(400).json({ message: "Wrong userId!!!" });
+            return;
+        }
+        // check if the data is correct
+        req
+            .checkBody('old_password', 'You must pass the old password!').notEmpty('old_password should not be Empty!');
+        req
+            .checkBody('new_password', 'You must pass the new password!').notEmpty('new_password should not be Empty!');
+        var validationErrors = req.validationErrors();
+
+        // if there is a validation error, return a bad request
+        if (validationErrors) {
+            res.status(400); // Bad Request
+            res.json(validationErrors);
+            // return to the user
+            return;
+        } else {
+            workflow.emit('checkPasswordExist');
+        }
+    });
+    // check if the password exists
+    workflow.on('checkPasswordExist', function checkPasswordExist() {
+        var old_pwd = body.old_password,
+            new_pwd = body.new_password;
+        // get the user
+        UserDal.get({ _id: user_id }, function (err, user) {
+            if (err) return next(err);
+            user.checkPassword(old_pwd, function (err, result) {
+                if (err) return next(err);
+                // if the result is not ok, return an error
+                if (!result) {
+                    res.status(400).json({ 'message': 'Your Password is incorrect!' });
+                    return;
+                }
+                console.log(user);
+                // reset password 
+                UserDal.update({ _id: user_id }, { password: new_pwd }, function (err, _user) {
+                    if (err) return next(err);
+                    // password change complete
+                    if (!_user._id) {
+                        res.status(500).json({ 'message': 'Something Went Wrong!!!' });
+                        return;
+                    } else {
+                        //console.log(_user);
+                        res.status(200).json({ 'message': 'Password Successfuly Changed!' });
+                    }
+                });
+            });
+        })
+    });
+
+    workflow.emit('validateParameters');
 }

@@ -29,8 +29,8 @@ var PlaceSchema = new Schema({
         max: { type: String},
         min: { type: String }
     },
-    popularity_level: { type: Number },
-    rate: { type: Number },
+    popularity_level: { type: Number, default: 0 },
+    rate: { type: Number, default: 0 },
 
     owner_info: {
         name: { type: String },
@@ -59,7 +59,8 @@ var PlaceSchema = new Schema({
     logo: {type: ObjectId, ref: 'Image'},
     destination: {type: ObjectId, ref: 'Destination'}, 
     place_feature: [{type:ObjectId, ref: 'Place_feature'}],
-    place_category: { type: ObjectId, ref: 'Place_category' },
+    place_category: [{ type: ObjectId, ref: 'Place_category' }],
+    place_cuisine: [{ type: ObjectId, ref: 'Place_cuisine' }],
     image: [{ type: ObjectId, ref: 'Image' }],
     branch: [{ type: ObjectId, ref: 'Branch' }],
     reservation: [{ type: ObjectId, ref: 'Reservation' }],

@@ -33,12 +33,16 @@ exports.getPlace = function getPlace(req, res, next) {
     var PlaceId = req.params.placeId;
 
     // fetch a Place
-    PlaceDal.get({ _id: PlaceId }, function getAPlace(err, Place) {
+    PlaceDal.get({
+        _id: PlaceId
+    }, function getAPlace(err, Place) {
         if (err) return next(err);
 
         // if the Place doesnot exist, return that to the Place
         if (!Place._id) {
-            res.status(404).json({ message: 'Place does not exist!' });
+            res.status(404).json({
+                message: 'Place does not exist!'
+            });
             return;
         }
 
@@ -87,9 +91,9 @@ exports.createPlace = function createPlace(req, res, next) {
         req
             .checkBody('email', 'Email Invalid!')
             .isEmail().withMessage('Email field has to be a correct email!');
-        req
-            .checkBody('can_reserve', 'Can Reserve Invalid!')
-            .isIn([true, false]).withMessage('Can Reserve should be true/false!');
+        // req
+        //     .check('can_reserve', 'Can Reserve Invalid!')
+        //     .isIn([true, false]).withMessage('Can Reserve should be true/false!');
 
         // check for validation errors
         var validationErrors = req.validationErrors();
@@ -112,7 +116,10 @@ exports.createPlace = function createPlace(req, res, next) {
         debug('[Workflow: checkIfPlaceExist] check if the place exists...');
 
         // Check if the place already exists in the database (checking the placename from the submitted email)
-        PlaceDal.get({ email: body.email, name: body.name }, function getPlace(err, place) {
+        PlaceDal.get({
+            email: body.email,
+            name: body.name
+        }, function getPlace(err, place) {
             if (err) return next(err);
 
             // if place exist response back
@@ -146,13 +153,25 @@ exports.createPlace = function createPlace(req, res, next) {
             webiste: body.webiste ? body.webiste : '',
             email: body.email ? body.email : '',
             can_reserve: body.can_reserve ? body.can_reserve : false,
-            price_range: body.price_range ? body.price_range : { max: '0.0', min: '0.0' },
+            price_range: body.price_range ? body.price_range : {
+                max: '0.0',
+                min: '0.0'
+            },
             popularity_level: body.popularity_level ? body.popularity_level : 0,
             rate: body.rate ? body.rate : 0,
-            owner_info: body.owner_info ? body.owner_info : { name: 'Owner', phone_number: body.phone_number },
-            manager_info: body.manager_info ? body.manager_info : { name: 'Owner', phone_number: body.phone_number },
+            owner_info: body.owner_info ? body.owner_info : {
+                name: 'Owner',
+                phone_number: body.phone_number
+            },
+            manager_info: body.manager_info ? body.manager_info : {
+                name: 'Owner',
+                phone_number: body.phone_number
+            },
             social: body.social ? body.social : {},
-            location: body.location ? body.location : { lat: 0, lng: 0 },
+            location: body.location ? body.location : {
+                lat: 0,
+                lng: 0
+            },
             //logo: body.logo?body.logo: '',
             //destination: body.destination ?body.destination:{}
         }, function callback(err, place) {
@@ -197,13 +216,15 @@ exports.getAllPlaces = function getAllPlaces(req, res, next) {
     // fetch a Place
     PlaceDal.getCollection({}, function getAllPlaces(err, places) {
         if (err) return next(err);
-        
+
         // if the Place doesnot exist, return that to the Place
         if (!Array.isArray(places)) {
-            res.status(404).json({ message: 'No Places Found!' });
+            res.status(404).json({
+                message: 'No Places Found!'
+            });
             return;
         }
-        
+
         res.status(200).json(places || {});
 
     });
