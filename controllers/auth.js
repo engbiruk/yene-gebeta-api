@@ -155,7 +155,7 @@ exports.login = function login(req, res, next) {
                     //res.exclude(['']);
                     res.json(_jsonResponse);
                     // return the user to the requester
-                    res.status(200).json(_user || {});
+                    //res.status(200).json(_user || {});
                 });
             });
 

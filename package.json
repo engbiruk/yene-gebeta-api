@@ -36,5 +36,9 @@
     "apidoc": "~0.17.5",
     "mocha": "^3.2.0",
     "supertest": "~3.0.0"
+  },
+  "apidoc": {
+    "title": "YENE-GEBETA API",
+    "url" : "http://35.185.89.4:8080"    
   }
 }

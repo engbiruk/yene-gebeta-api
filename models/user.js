@@ -86,35 +86,35 @@ UserSchema.pre('save', true, function preSaveHook(next, done) {
 // });
 
 // Find one and update 
-UserSchema.pre('findOneAndUpdate', true, function preUpdateHook(next, done) {
-    debug('[User Model] Pre-findOneAndUpdate Hook...');
+// UserSchema.pre('findOneAndUpdate', true, function preUpdateHook(next, done) {
+//     debug('[User Model] Pre-findOneAndUpdate Hook...');
 
-    var self = this;
-    var model = self.getUpdate();
-    //console.log(model.password);
-    // generate a salt
-    bcrypt.genSalt(config.SALT_LENGTH, function generateSalt(err, SALT) {
-        if (err) return done(err);
-        // generate hash for a password using salt
-        //console.log(UserSchema, ", ", model, ", ", this.password, " ============  ");
-        bcrypt.hash(model.password, SALT, function hashPassword(err, HASH) {
-            if (err) return done(err);
+//     var self = this;
+//     var model = self.getUpdate();
+//     //console.log(model.password);
+//     // generate a salt
+//     bcrypt.genSalt(config.SALT_LENGTH, function generateSalt(err, SALT) {
+//         if (err) return done(err);
+//         // generate hash for a password using salt
+//         //console.log(UserSchema, ", ", model, ", ", this.password, " ============  ");
+//         bcrypt.hash(model.password, SALT, function hashPassword(err, HASH) {
+//             if (err) return done(err);
 
-            // create a current timestamp
-            var now = moment().toISOString();
+//             // create a current timestamp
+//             var now = moment().toISOString();
 
-            // // set last_modified value to current time
-            // model.last_modified = now;
-            // // modify password with a new hashed password
-            // model.password = HASH;
-            // console.log(model);
-            // done();
-        });
-    });
+//             // // set last_modified value to current time
+//             // model.last_modified = now;
+//             // // modify password with a new hashed password
+//             // model.password = HASH;
+//             // console.log(model);
+//             // done();
+//         });
+//     });
 
-    // call the next middleware
-    next();
-});
+//     // call the next middleware
+//     next();
+// });
 
 
 // COMPARE PASSWORDS METHOD

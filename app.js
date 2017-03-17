@@ -41,13 +41,14 @@ mongoose.connection.on('error', function mongodbConnectionListener() {
 var app = express();
 
 // MIDDLEWARES
-app.use(express.static('public'));
+var _static = express.static('public');
+_static.unless = unless;
+
+app.use(_static.unless({method: 'GET'}));
 // set authentication middleware
-app.use(authenticate().unless({
+app.use(authenticate().unless({ 
     // paths that are authentication is waved
     path: ['/users/login', '/users/signup', '/users/all1'
-        // public
-        , '/public/*', '/public/placesLogo/:placesLogo', '/placesLogo/:placesLogo', '/placesLogo/*'
         // Place    
         // ,'/users/:userId'
     ]

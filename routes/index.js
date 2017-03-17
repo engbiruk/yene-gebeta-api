@@ -9,6 +9,8 @@ var menu_categoryRouter			    = require('./menu_category');
 var menuRouter			            = require('./menu');
 var reservationRouter			    = require('./reservation');
 var place_categoryRouter	        = require('./place_category');
+var place_cuisineRouter	            = require('./place_cuisine');
+var place_featureRouter	            = require('./place_feature');
 var placeRouter			            = require('./place');
 var reviewRouter			        = require('./review');
 var userRouter			            = require('./user');
@@ -28,9 +30,13 @@ module.exports = function initRouter(app){
     app.use('/menus', menuRouter);
     // Reservations Endpoint
     app.use('/reservations', reservationRouter);
-    // Restaurant Categories Endpoint
+    // Place Categories Endpoint
     app.use('/place_categories', place_categoryRouter);
-    // Restaurants Endpoint
+    // Place Cuisine Endpoint
+    app.use('/place_cuisines', place_cuisineRouter);
+    // Place Feature Endpoint
+    app.use('/place_features', place_featureRouter);
+    // Place Endpoint
     app.use('/places', placeRouter);
     // Reviews Endpoint
     app.use('/reviews', reviewRouter);

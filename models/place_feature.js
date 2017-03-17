@@ -3,7 +3,7 @@ var mongoose		= require('mongoose');
 var moment			= require('moment');
 var bcrypt			= require('bcrypt');
 var debug			= require('debug')('yene-gebeta-api:place_feature-model');
-
+var _			= require('underscore');
 // LOAD CONFIG
 var config			= require('../config');
 
