@@ -1,27 +1,28 @@
 // LOAD MODULE DEPENDENCIES
-var express			= require('express');
+var express = require('express');
 
 // LOAD INDIVIDUAL ROUTES
-var branchRouter			        = require('./branch');
-var destinationRouter			    = require('./destination');
-var imageRouter			            = require('./image');
-var menu_categoryRouter			    = require('./menu_category');
-var menuRouter			            = require('./menu');
-var reservationRouter			    = require('./reservation');
-var place_categoryRouter	        = require('./place_category');
-var place_cuisineRouter	            = require('./place_cuisine');
-var place_featureRouter	            = require('./place_feature');
-var placeRouter			            = require('./place');
-var reviewRouter			        = require('./review');
-var userRouter			            = require('./user');
+var branchRouter = require('./branch');
+var destinationRouter = require('./destination');
+var imageRouter = require('./image');
+var menu_categoryRouter = require('./menu_category');
+var menuRouter = require('./menu');
+var reservationRouter = require('./reservation');
+var place_categoryRouter = require('./place_category');
+var place_cuisineRouter = require('./place_cuisine');
+var place_featureRouter = require('./place_feature');
+var placeRouter = require('./place');
+var reviewRouter = require('./review');
+var userRouter = require('./user');
+//var authenticate = require('./lib/authenticate');
 
 // EXPORT ROUTER AS A MODULE
-module.exports = function initRouter(app){
+module.exports = function initRouter(app) {
 
     // Branchs Endpoint
     app.use('/branches', branchRouter);
     // Destinations Endpoint
-    app.use('/destination', destinationRouter);
+    app.use('/destinations', destinationRouter);
     // Images Endpoint
     app.use('/images', imageRouter);
     // Menu Categories Endpoint

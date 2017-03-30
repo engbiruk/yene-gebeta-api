@@ -21,6 +21,7 @@ var upload      = multer({
 var image	= require('../controllers/image');
 var auth			= require('../controllers/auth');
 var authorize		= require('../lib/authorize');
+//var authenticate = require('./lib/authenticate');
 
 // CREATE A ROUTER
 var router = express.Router();

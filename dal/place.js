@@ -5,7 +5,7 @@
 // LOAD MODULE DEPEDENCIES
 var debug = require('debug')('yene-gebeta-api:place-dal');
 var moment = require('moment');
-var _			= require('underscore');
+var _ = require('underscore');
 
 // LOAD MODELS
 var Place = require('../models/place');
@@ -13,7 +13,7 @@ var Place = require('../models/place');
 // LOAD POPULATED AND RETURN FIELDS
 var population = [
     // {path: 'place_category'},
-    // {path: 'destination'},
+    { path: 'destination' },
     // {path: 'image'},
     // {path: 'branch'},
     // {path: 'reservation'},
@@ -35,8 +35,8 @@ exports.get = function get(query, callback) {
     debug('[Place DAL] Getting a place: ' + query);
 
     Place
-        .findOne(query)     // find the place profile from the query
-        .populate(population)   // populate with a Place_profile model link
+        .findOne(query) // find the place profile from the query
+        .populate(population) // populate with a Place_profile model link
         .exec(function getPlace(err, place) {
             if (err) return callback(err);
 
@@ -63,7 +63,7 @@ exports.create = function create(placeData, callback) {
         if (err) return callback(err);
 
         // check if the comming data is indeed a place data
-        exports.get({ _id: data._id }, function (err, place) {
+        exports.get({ _id: data._id }, function(err, place) {
             if (err) return callback(err);
             // callback the place data if the place exists or send empity object if it doesn't
             callback(null, place || {});
@@ -84,9 +84,9 @@ exports.delete = function remove(query, callback) {
     debug('[Place DAL] Deleting place: ', query);
 
     Place
-        .findOne(query)     // find the place from the query
-        .populate(population)   // populate with a Place_profile model link
-        .exec(function deletePlace(err, place) {   // executes the query
+        .findOne(query) // find the place from the query
+        .populate(population) // populate with a Place_profile model link
+        .exec(function deletePlace(err, place) { // executes the query
             if (err) return callback(err);
 
             // if the place is not set sed a callback empity object (the object is predeleted or doesn't exist)
@@ -121,7 +121,7 @@ exports.update = function update(query, updates, callback) {
 
     Place
         .findOneAndUpdate(query, updates) // find the place from the query and updates them with new updates
-        .populate(population)   // populate with a Place_profile model link
+        .populate(population) // populate with a Place_profile model link
         .exec(function updatePlace(err, place) {
             if (err) return callback(err);
 
@@ -148,18 +148,18 @@ exports.getCollection = function getACollectionOfPlaces(query, callback) {
             if (err) return callback(err);
 
             var _places = [];
-            places.forEach(function (place) {
+            places.forEach(function(place) {
 
-                place.omitFields([], function (err, _place) {
+                place.omitFields([], function(err, _place) {
                     if (err) return next(err);
 
                     // if logo is defined
-                    if(place.logo){
+                    if (place.logo) {
                         var _logo = place.logo.toJSON();
                         // filter the fields
                         _place.logo = _.omit(_place.logo, ['__v', 'last_modified', 'date_created']);
                     }
-                    
+
                     // push to _places
                     _places.push(_place);
                 });

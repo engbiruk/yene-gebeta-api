@@ -5,6 +5,7 @@ var express = require('express');
 var user = require('../controllers/user');
 var auth = require('../controllers/auth');
 var authorize = require('../lib/authorize');
+var authenticate = require('../lib/authenticate');
 
 // CREATE A ROUTER
 var router = express.Router();
@@ -150,7 +151,6 @@ router.post('/signup', user.createUser);
 // POST /users/login
 router.post('/login', auth.login);
 
-
 /**
  * @api {post} /users/logout User Logout
  * @apiDescription User Logout 
@@ -213,11 +213,10 @@ router.post('/logout', auth.logout);
  * 
  */
 // POST /users/change_password
-router.post('/change_password/:userId', user.change_password);
-
+router.post('/change_password/:userId', authenticate(), user.change_password);
 
 // GET /users/all
-router.get('/all', user.getAllUsers);
+router.get('/all', authenticate(), user.getAllUsers);
 
 /**
  * @api {get} /users/:userId Get Single User
@@ -272,12 +271,12 @@ router.get('/all', user.getAllUsers);
  * 
  */
 // GET /users/:userId
-router.get('/:userId', user.getUser);
+router.get('/:userId', authenticate(), user.getUser);
 
 // PUT /users/:userId
-router.put('/:userId', user.noop);
+router.put('/:userId', authenticate(), user.noop);
 
 // DELETE /users/:userId
-router.delete('/:userId', user.noop);
+router.delete('/:userId', authenticate(), user.noop);
 
 module.exports = router;

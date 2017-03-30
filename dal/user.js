@@ -34,7 +34,7 @@ exports.create = function create(userData, callback) {
         if (err) return callback(err);
 
         // check if the comming data is indeed a user data
-        exports.get({ _id: data._id }, function (err, user) {
+        exports.get({ _id: data._id }, function(err, user) {
             if (err) return callback(err);
             // callback the user data if the user exists or send empity object if it doesn't
             callback(null, user || {});
@@ -55,9 +55,9 @@ exports.delete = function remove(query, callback) {
     debug('[User DAL] Deleting user: ', query);
 
     User
-        .findOne(query)     // find the user from the query
-        .populate(population)   // populate with a User_profile model link
-        .exec(function deleteUser(err, user) {   // executes the query
+        .findOne(query) // find the user from the query
+        .populate(population) // populate with a User_profile model link
+        .exec(function deleteUser(err, user) { // executes the query
             if (err) return callback(err);
 
             // if the user is not set sed a callback empity object (the object is predeleted or doesn't exist)
@@ -85,8 +85,8 @@ exports.get = function get(query, callback) {
     debug('[User DAL] Geting a user: ' + query);
 
     User
-        .findOne(query)     // find the user profile from the query
-        .populate(population)   // populate with a User_profile model link
+        .findOne(query) // find the user profile from the query
+        .populate(population) // populate with a User_profile model link
         .exec(function getUser(err, user) {
             if (err) return callback(err);
 
@@ -112,7 +112,7 @@ exports.update = function update(query, updates, callback) {
 
     User
         .findOneAndUpdate(query, updates) // find the user from the query and updates them with new updates
-        .populate(population)   // populate with a User_profile model link
+        .populate(population) // populate with a User_profile model link
         .exec(function updateUser(err, user) {
             if (err) return callback(err);
 
@@ -144,16 +144,12 @@ exports.getCollection = function getACollectionOfUsers(query, callback) {
 };
 
 
-// exports.checkPassword = function checkPassword(password, callback) {
-//     debug('[Checking Passwords]')
+exports.hashPassword = function hashPassword(password, callback) {
+    debug('[Hashing Passwords]')
 
-//     // get the user
-//     var user = req._user;
+    User.hashPassword(password, function(err, HASH) {
+        if (err) return callback(err);
 
-//     // Compare two passwords
-//     bcrypt.compare(password, user.password, function done(err, res) {
-//         if(err) return callback(err);
-
-//         callback(null, res);
-//     });
-// };
+        callback(null, HASH);
+    });
+};

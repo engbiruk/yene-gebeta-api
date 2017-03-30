@@ -3,20 +3,14 @@
  */
 
 // LOAD MODULE DEPEDENCIES
-var debug			= require('debug')('yene-gebeta-api:destination-dal');
-var moment			= require('moment');
+var debug = require('debug')('yene-gebeta-api:destination-dal');
+var moment = require('moment');
 
 // LOAD MODELS
-var Destination			= require('../models/destination');
+var Destination = require('../models/destination');
 
 // LOAD POPULATED AND RETURN FIELDS
 var population = [{
-    path: 'user_profile'
-},
-{
-    path: 'image'
-},
-{
     path: 'place'
 }];
 
@@ -35,12 +29,12 @@ exports.create = function create(destinationData, callback) {
     var destinationModel = new Destination(destinationData);
 
     // save the new destination model to the database
-    destinationModel.save(function saveDestination(err, data){
-        if(err) return callback(err);
-        
+    destinationModel.save(function saveDestination(err, data) {
+        if (err) return callback(err);
+
         // check if the comming data is indeed a destination data
-        exports.get({_id: data._id}, function (err, destination){
-            if(err) return callback(err);
+        exports.get({ _id: data._id }, function(err, destination) {
+            if (err) return callback(err);
             // callback the destination data if the destination exists or send empity object if it doesn't
             callback(null, destination || {});
         });
@@ -60,17 +54,17 @@ exports.delete = function remove(query, callback) {
     debug('[Destination DAL] Deleting destination: ', query);
 
     Destination
-        .findOne(query)     // find the destination from the query
-        .populate(population)   // populate with a Destination_profile model link
-        .exec(function deleteDestination(err, destination){   // executes the query
-            if(err) return callback(err);
-            
+        .findOne(query) // find the destination from the query
+        .populate(population) // populate with a Destination model link
+        .exec(function deleteDestination(err, destination) { // executes the query
+            if (err) return callback(err);
+
             // if the destination is not set sed a callback empity object (the object is predeleted or doesn't exist)
-            if(!destination) return callback(null, {});
+            if (!destination) return callback(null, {});
 
             // if the destination exist, try removing it from the database
-            destination.remove(function removeDestination(err){
-                if(err) return callback(err);
+            destination.remove(function removeDestination(err) {
+                if (err) return callback(err);
 
                 // return the destination to the callback
                 callback(null, destination);
@@ -90,11 +84,11 @@ exports.get = function get(query, callback) {
     debug('[Destination DAL] Geting a destination: ' + query);
 
     Destination
-        .findOne(query)     // find the destination profile from the query
-        .populate(population)   // populate with a Destination_profile model link
-        .exec(function getDestination(err, destination){
-            if(err) return callback(err);
-            
+        .findOne(query) // find the destination profile from the query
+        .populate(population) // populate with a Destination model link
+        .exec(function getDestination(err, destination) {
+            if (err) return callback(err);
+
             // return the destination to the callback function. return empity object if the destination doesn't exist in the database
             callback(null, destination || {});
         });
@@ -110,17 +104,17 @@ exports.get = function get(query, callback) {
  * 
  */
 exports.update = function update(query, updates, callback) {
-    debug('[Destination DAL] Updating a destination: ', query);
+    debug('[Destination DAL] Updating a destination: ', query, updates);
 
     // set update's set value 
     updates.$set = updates.$set || {};
 
     Destination
         .findOneAndUpdate(query, updates) // find the destination from the query and updates them with new updates
-        .populate(population)   // populate with a Destination_profile model link
-        .exec(function updateDestination(err, destination){
-            if(err) return callback(err);
-            
+        .populate(population) // populate with a Destination model link
+        .exec(function updateDestination(err, destination) {
+            if (err) return callback(err);
+
             // return the updated destination to the callback function and send an empity object if the destination doesn't exist anymore
             callback(null, destination || {});
         });
@@ -138,12 +132,12 @@ exports.getCollection = function getACollectionOfDestinations(query, callback) {
     debug('[Destination DAL] fetching a collection of destinations', query);
 
     Destination
-    .find(query)
-    .populate(population)
-    .exec(function getDestinationsCollection(err, destinations){
-        if(err) return callback(err);
-        
-        // return destinations to the callback function
-        callback(null, destinations || {});
-    });
+        .find(query)
+        .populate(population)
+        .exec(function getDestinationsCollection(err, destinations) {
+            if (err) return callback(err);
+
+            // return destinations to the callback function
+            callback(null, destinations || {});
+        });
 };

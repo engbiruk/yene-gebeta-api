@@ -1,10 +1,11 @@
 // LOAD MODULE DEPENDECIES
-var express			= require('express');
+var express = require('express');
 
 // LOAD CONTROLLERS
-var branch			= require('../controllers/branch');
-var auth			= require('../controllers/auth');
-var authorize		= require('../lib/authorize');
+var branch = require('../controllers/branch');
+var auth = require('../controllers/auth');
+var authorize = require('../lib/authorize');
+//var authenticate = require('./lib/authenticate');
 
 // CREATE A ROUTER
 var router = express.Router();

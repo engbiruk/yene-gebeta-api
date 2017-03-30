@@ -5,6 +5,7 @@ var express			= require('express');
 var place_feature			= require('../controllers/place_feature');
 var auth			= require('../controllers/auth');
 var authorize		= require('../lib/authorize');
+//var authenticate = require('./lib/authenticate');
 
 // CREATE A ROUTER
 var router = express.Router();

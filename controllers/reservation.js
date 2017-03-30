@@ -18,14 +18,17 @@ exports.noop = function noop(req, res, next) {
 // create a reservation
 exports.createReservation = function createReservation(req, res, next) {
     debug('Create a reservation');
-    
+
     var workflow = new events.EventEmitter();
 
     // check if the name field is valid
     workflow.on('validateReservation', function validation() {
         debug('Validate reservation');
 
-        req.checkBody('name', 'Name Should not be Empty!').notEmpty();
+        req.checkBody('number_of_guests', 'You must specify number of guests!').notEmpty();
+        req.checkBody('reservation_date', 'Reservation Date Should not be Empty!').notEmpty();
+        req.checkBody('reservation_time', 'Reservation Time Should not be Empty!').notEmpty();
+        
         if (req.validationErrors()) {
             res.status(400).json(req.validationErrors());
             return;

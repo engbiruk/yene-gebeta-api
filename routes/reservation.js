@@ -5,6 +5,7 @@ var express			= require('express');
 var reservation			= require('../controllers/reservation');
 var auth			= require('../controllers/auth');
 var authorize		= require('../lib/authorize');
+//var authenticate = require('./lib/authenticate');
 
 // CREATE A ROUTER
 var router = express.Router();

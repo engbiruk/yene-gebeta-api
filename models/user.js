@@ -147,4 +147,17 @@ UserSchema.methods.omitFields = function omitFields(fields, callback) {
     callback(null, _user);
 }
 
+UserSchema.statics.hashPassword = function hashPassword(password, callback) {
+
+    bcrypt.genSalt(config.SALT_LENGTH, function generateSalt(err, SALT) {
+        if (err) return callback(err);
+        // generate hash for a password using salt
+        bcrypt.hash(password, SALT, function hashPassword(err, HASH) {
+            if (err) return callback(err);
+
+            callback(null, HASH);
+        });
+    });
+}
+
 module.exports = mongoose.model('User', UserSchema);

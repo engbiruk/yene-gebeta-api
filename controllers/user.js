@@ -164,7 +164,7 @@ exports.createUser = function createUser(req, res, next) {
         debug('[User Controller: Create User][Workflow: respond] respond to the request...');
 
         // remove user's password, last_login abd realm info to be send as a respond
-        user.omitFields(['password', 'last_login', 'realm'], function (err, user) {
+        user.omitFields(['password', 'last_login', 'realm'], function(err, user) {
             // send back a respond
             res.status(201); // Created
             res.json(user); // send the user
@@ -190,10 +190,10 @@ exports.getAllUsers = function getAllUsers(req, res, next) {
         var _users = [];
         users.forEach(function getUser(user) {
             // remove unwanted fields from populated user_profile field in the user
-            user.user_profile.omitFields(['user'], function (err, _user_profile) {
+            user.user_profile.omitFields(['user'], function(err, _user_profile) {
                 if (err) return next(err);
                 // remove the unwanted fields from the user
-                user.omitFields([], function (err, _user) {
+                user.omitFields([], function(err, _user) {
                     if (err) return next(err);
                     // replace the user_profile of the user with the removed user_profile
                     _user.user_profile = _user_profile;
@@ -236,10 +236,10 @@ exports.getUser = function getUser(req, res, next) {
         }
 
         // remove unwanted fields from populated user_profile field in the user
-        user.user_profile.omitFields(['user'], function (err, _user_profile) {
+        user.user_profile.omitFields(['user'], function(err, _user_profile) {
             if (err) return next(err);
             // remove the unwanted fields from the user
-            user.omitFields([], function (err, _user) {
+            user.omitFields([], function(err, _user) {
                 if (err) return next(err);
                 // replace the user_profile of the user with the removed user_profile
                 _user.user_profile = _user_profile;
@@ -296,28 +296,34 @@ exports.change_password = function change_password(req, res, next) {
         var old_pwd = body.old_password,
             new_pwd = body.new_password;
         // get the user
-        UserDal.get({ _id: user_id }, function (err, user) {
+        UserDal.get({ _id: user_id }, function(err, user) {
             if (err) return next(err);
-            user.checkPassword(old_pwd, function (err, result) {
+            if (!user || !user._id) {
+                res.status(400).json({ 'message': 'User Not Found!' });
+                return;
+            }
+            user.checkPassword(old_pwd, function(err, result) {
                 if (err) return next(err);
                 // if the result is not ok, return an error
                 if (!result) {
-                    res.status(400).json({ 'message': 'Your Password is incorrect!' });
+                    res.status(400).json({ 'message': 'Your Old Password is incorrect!' });
                     return;
                 }
-                console.log(user);
-                // reset password 
-                UserDal.update({ _id: user_id }, { password: new_pwd }, function (err, _user) {
-                    if (err) return next(err);
-                    // password change complete
-                    if (!_user._id) {
-                        res.status(500).json({ 'message': 'Something Went Wrong!!!' });
-                        return;
-                    } else {
-                        //console.log(_user);
-                        res.status(200).json({ 'message': 'Password Successfuly Changed!' });
-                    }
+                UserDal.hashPassword(new_pwd, function(err, hashedPassword) {
+                    // reset password
+                    UserDal.update({ _id: user_id }, { password: hashedPassword }, function(err, _user) {
+                        if (err) return next(err);
+                        // password change complete
+                        if (!_user._id) {
+                            res.status(500).json({ 'message': 'Something Went Wrong!!!' });
+                            return;
+                        } else {
+                            //console.log(_user);
+                            res.status(200).json({ 'message': 'Password Successfuly Changed!' });
+                        }
+                    });
                 });
+
             });
         })
     });

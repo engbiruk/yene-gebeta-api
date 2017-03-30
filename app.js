@@ -40,25 +40,15 @@ mongoose.connection.on('error', function mongodbConnectionListener() {
 // INIT APP
 var app = express();
 
-// MIDDLEWARES
-var _static = express.static('public');
-_static.unless = unless;
 
-app.use(_static.unless({method: 'GET'}));
-// set authentication middleware
-app.use(authenticate().unless({ 
-    // paths that are authentication is waved
-    path: ['/users/login', '/users/signup', '/users/all1'
-        // Place    
-        // ,'/users/:userId'
-    ]
-}));
+// MIDDLEWARES
+
 
 // set body parser middleware
 app.use(bodyparser.json());
 
 // static files
-
+app.use(express.static('public'));
 
 // partial response middleware
 app.use(partialResponse());
