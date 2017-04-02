@@ -7,6 +7,7 @@ var mongoose = require('mongoose');
 
 // LOAD MODEL'S DAL
 var ReservationDal = require('../dal/reservation');
+var UserDal = require('../dal/user');
 
 // EXPORT NOOP
 exports.noop = function noop(req, res, next) {
@@ -28,7 +29,9 @@ exports.createReservation = function createReservation(req, res, next) {
         req.checkBody('number_of_guests', 'You must specify number of guests!').notEmpty();
         req.checkBody('reservation_date', 'Reservation Date Should not be Empty!').notEmpty();
         req.checkBody('reservation_time', 'Reservation Time Should not be Empty!').notEmpty();
-        
+        req.checkBody('user', 'Reservation user id Should not be Empty!').notEmpty();
+        req.checkBody('place', 'Place Id Should not be Empty!').notEmpty();
+
         if (req.validationErrors()) {
             res.status(400).json(req.validationErrors());
             return;
@@ -38,37 +41,59 @@ exports.createReservation = function createReservation(req, res, next) {
     });
     // check if the reservation name exists before
     workflow.on('checkIfReservationExists', function checkIfReservationExists() {
-        debug('Validate if reservation exists');
+        debug('Validate if reservation exists', req.body.user);
 
-        // get the reservation from the db with a name passed
-        ReservationDal.get({
-            name: req.body.name
-        }, function (err, reservation) {
+        UserDal.get({
+            _id: req.body.user
+        }, function(err, user) {
             if (err) return next(err);
-            // check if the reservation exists
-            if (reservation._id) {
-                // return error
-                res.status(400).json({
-                    error: true,
-                    message: 'The Reservation already registered with the same name!'
-                });
-            } else {
-                // got to the next workflow
-                workflow.emit('createReservation');
+
+            if (!user._id) {
+                res.status(404).json({ message: "No User Found with that user Id!" });
+                return;
             }
+            // get the reservation from the db with a name passed
+            ReservationDal.get({
+                number_of_guests: req.body.number_of_guests,
+                reservation_date: req.body.reservation_date,
+                reservation_time: req.body.reservation_time,
+                user_profile: user.user_profile,
+                place: req.body.place
+            }, function(err, reservation) {
+                if (err) return next(err);
+                // check if the reservation exists
+                if (reservation._id) {
+                    // return error
+                    res.status(400).json({
+                        error: true,
+                        message: 'The Reservation already registered with the same info!'
+                    });
+                } else {
+                    // got to the next workflow
+                    workflow.emit('createReservation', user);
+                }
+            });
         });
     });
 
     // create a reservation
-    workflow.on('createReservation', function createReservation() {
+    workflow.on('createReservation', function createReservation(user) {
         debug('create Place Category');
 
         ReservationDal.create({
-            name: req.body.name,
-            description: req.body.description || ''
+            number_of_guests: req.body.number_of_guests,
+            reservation_date: req.body.reservation_date,
+            reservation_time: req.body.reservation_time,
+            note: req.body.note ? req.body.note : '',
+            user_profile: user.user_profile,
+            place: req.body.place
         }, function cb(err, reservation) {
             if (err) return next(err);
 
+            if (!reservation._id) {
+                res.status(500).json({ message: "Can not create Reservation!" });
+                return;
+            }
             // trigger the next workflow
             workflow.emit('respond', reservation);
         });
@@ -78,7 +103,7 @@ exports.createReservation = function createReservation(req, res, next) {
     workflow.on('respond', function respond(reservation) {
         debug('respond');
         // omit the unecessary fields
-        reservation.omitFields([], function (err, _reservation) {
+        reservation.omitFields([], function(err, _reservation) {
             res.status(201).json(_reservation);
         });
     });
@@ -135,7 +160,7 @@ exports.deleteReservation = function deleteReservation(req, res, next) {
         debug('respond');
         // omit the unecessary fields
 
-        reservation.omitFields([], function (err, _reservation) {
+        reservation.omitFields([], function(err, _reservation) {
             res.status(200).json({
                 message: 'Reservation is successfuly Deleted!',
                 data: _reservation
@@ -196,7 +221,7 @@ exports.getReservation = function getReservation(req, res, next) {
         debug('respond');
         // omit the unecessary fields
 
-        reservation.omitFields([], function (err, _reservation) {
+        reservation.omitFields([], function(err, _reservation) {
             res.status(200).json(_reservation);
         });
     });
@@ -215,15 +240,24 @@ exports.updateReservation = function updateReservation(req, res, next) {
     workflow.on('validateReservation', function validation() {
         debug('Validate reservation');
 
-        // check if the objectId is right
-        if (!mongoose.Types.ObjectId.isValid(req.params.reservationId)) {
-            res.status(400).json({
-                error: true,
-                message: 'Please Use Correct reservationId!'
-            });
+        req.checkBody('number_of_guests', 'You must specify number of guests!').notEmpty();
+        req.checkBody('reservation_date', 'Reservation Date Should not be Empty!').notEmpty();
+        req.checkBody('reservation_time', 'Reservation Time Should not be Empty!').notEmpty();
+
+        if (req.validationErrors()) {
+            res.status(400).json(req.validationErrors());
             return;
         } else {
-            workflow.emit('updateReservation');
+            // check if the objectId is right
+            if (!mongoose.Types.ObjectId.isValid(req.params.reservationId)) {
+                res.status(400).json({
+                    error: true,
+                    message: 'Please Use Correct reservationId!'
+                });
+                return;
+            } else {
+                workflow.emit('updateReservation');
+            }
         }
     });
 
@@ -234,7 +268,10 @@ exports.updateReservation = function updateReservation(req, res, next) {
         ReservationDal.update({
             _id: req.params.reservationId
         }, {
-            description: req.body.description
+            number_of_guests: req.body.number_of_guests,
+            reservation_date: req.body.reservation_date,
+            reservation_time: req.body.reservation_time,
+            note: req.body.note ? req.body.note : ''
         }, function cb(err, reservation) {
             if (err) return next(err);
             // check if the reservation exists or not
@@ -256,7 +293,7 @@ exports.updateReservation = function updateReservation(req, res, next) {
         debug('respond');
         // omit the unecessary fields
 
-        reservation.omitFields([], function (err, _reservation) {
+        reservation.omitFields([], function(err, _reservation) {
             res.status(200).json(_reservation);
         });
     });
@@ -296,8 +333,8 @@ exports.getAllReservations = function getAllReservations(req, res, next) {
         debug('respond');
         _reservations = [];
         // omit the unecessary fields
-        reservations.forEach(function (reservation) {
-            reservation.omitFields([], function (err, _reservation) {
+        reservations.forEach(function(reservation) {
+            reservation.omitFields([], function(err, _reservation) {
                 _reservations.push(_reservation);
             });
         });

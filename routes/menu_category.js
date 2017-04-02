@@ -5,7 +5,7 @@ var express = require('express');
 var menu_category = require('../controllers/menu_category');
 var auth = require('../controllers/auth');
 var authorize = require('../lib/authorize');
-//var authenticate = require('./lib/authenticate');
+//var authenticate = require('../lib/authenticate');
 
 // CREATE A ROUTER
 var router = express.Router();
@@ -132,7 +132,7 @@ router.get('/:menu_categoryId', menu_category.getMenu_category);
  * @apiName Menu_category Update
  * @apiVersion 1.0.0
  * 
- * @apiParam {String} description  Description
+ * @apiParam {String} [description]  Description
  * @apiExample Request Example:
  * {
  *	 "description": "Ethiopian Pasta"
@@ -170,7 +170,7 @@ router.put('/:menu_categoryId', menu_category.updateMenu_category);
  * @apiVersion 1.0.0
  *
  * @apiParam {String} title  Menu_category Name
- * @apiParam {String} description  Description
+ * @apiParam {String} [description]  Description
  * @apiExample Request Example:
  * {
  *	 "title": "Pasta",

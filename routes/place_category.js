@@ -1,10 +1,10 @@
 // LOAD MODULE DEPENDECIES
-var express			= require('express');
+var express = require('express');
 
 // LOAD CONTROLLERS
-var place_category			= require('../controllers/place_category');
-var auth			= require('../controllers/auth');
-var authorize		= require('../lib/authorize');
+var place_category = require('../controllers/place_category');
+var auth = require('../controllers/auth');
+var authorize = require('../lib/authorize');
 //var authenticate = require('./lib/authenticate');
 
 // CREATE A ROUTER
@@ -131,7 +131,7 @@ router.get('/:place_categoryId', place_category.getPlaceCategory);
  * @apiName Place_category Update
  * @apiVersion 1.0.0
  * 
- * @apiParam {String} description  Description
+ * @apiParam {String} [description]  Description
  * @apiExample Request Example:
  * {
  *	 "description": "Special Shiro Serving Place"
@@ -169,7 +169,7 @@ router.put('/:place_categoryId', place_category.updatePlaceCategory);
  * @apiVersion 1.0.0
  *
  * @apiParam {String} name  Place_category Name
- * @apiParam {String} description  Description
+ * @apiParam {String} [description]  Description
  * @apiExample Request Example:
  * {
  *	 "name": "Shiro House",

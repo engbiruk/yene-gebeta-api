@@ -1,10 +1,10 @@
 // LOAD MODULE DEPENDECIES
-var express			= require('express');
+var express = require('express');
 
 // LOAD CONTROLLERS
-var place_cuisine	= require('../controllers/place_cuisine');
-var auth			= require('../controllers/auth');
-var authorize		= require('../lib/authorize');
+var place_cuisine = require('../controllers/place_cuisine');
+var auth = require('../controllers/auth');
+var authorize = require('../lib/authorize');
 //var authenticate = require('./lib/authenticate');
 
 // CREATE A ROUTER
@@ -132,7 +132,7 @@ router.get('/:place_cuisineId', place_cuisine.getPlaceCuisine);
  * @apiName Place_cuisine Update
  * @apiVersion 1.0.0
  * 
- * @apiParam {String} description  Description
+ * @apiParam {String} [description]  Description
  * @apiExample Request Example:
  * {
  *	 "description": "Italian Cuisine and Restaurant"
@@ -170,7 +170,7 @@ router.put('/:place_cuisineId', place_cuisine.updatePlaceCuisine);
  * @apiVersion 1.0.0
  *
  * @apiParam {String} name  Place_cuisine Name
- * @apiParam {String} description  Description
+ * @apiParam {String} [description]  Description
  * @apiExample Request Example:
  * {
  *	 "name": "Italian Cuisine",

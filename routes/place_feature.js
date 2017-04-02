@@ -1,10 +1,10 @@
 // LOAD MODULE DEPENDECIES
-var express			= require('express');
+var express = require('express');
 
 // LOAD CONTROLLERS
-var place_feature			= require('../controllers/place_feature');
-var auth			= require('../controllers/auth');
-var authorize		= require('../lib/authorize');
+var place_feature = require('../controllers/place_feature');
+var auth = require('../controllers/auth');
+var authorize = require('../lib/authorize');
 //var authenticate = require('./lib/authenticate');
 
 // CREATE A ROUTER
@@ -131,7 +131,7 @@ router.get('/:place_featureId', place_feature.getPlaceFeature);
  * @apiName Place_feature Update
  * @apiVersion 1.0.0
  * 
- * @apiParam {String} description  Description
+ * @apiParam {String} [description]  Description
  * @apiExample Request Example:
  * {
  *	 "description": "Free Wifi with 10Mbps"
@@ -169,7 +169,7 @@ router.put('/:place_featureId', place_feature.updatePlaceFeature);
  * @apiVersion 1.0.0
  *
  * @apiParam {String} name  Place_feature Name
- * @apiParam {String} description  Description
+ * @apiParam {String} [description]  Description
  * @apiExample Request Example:
  * {
  *	 "name": "Free WiFi",

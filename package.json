@@ -39,6 +39,6 @@
     },
     "apidoc": {
         "title": "YENE-GEBETA API",
-        "url": "http://35.185.89.4:8000"
+        "url": "http://localhost:8000"
     }
 }

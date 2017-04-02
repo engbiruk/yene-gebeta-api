@@ -57,7 +57,11 @@ app.use(partialResponse());
 app.use(validator());
 
 // set BEFORE AND AFTER middleware
-//app.use(bafMiddleware); 
+app.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+});
 
 // SET ROUTER
 router(app);

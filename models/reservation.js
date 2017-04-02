@@ -3,6 +3,7 @@ var mongoose = require('mongoose');
 var moment = require('moment');
 var bcrypt = require('bcrypt');
 var debug = require('debug')('yene-gebeta-api:reservation-model');
+var _ = require('underscore');
 
 // LOAD CONFIG
 var config = require('../config');
@@ -17,7 +18,7 @@ var ReservationSchema = new Schema({
         type: Number
     },
     reservation_date: {
-        type: Date
+        type: String
     },
     reservation_time: {
         type: String
@@ -61,17 +62,6 @@ ReservationSchema.pre('save', function preSaveHook(next) {
     next();
 });
 
-// PRE UPDATE HOOK
-ReservationSchema.pre('update', function preUpdateHook(next) {
-    debug('[Reservation Model] Pre-update Hook...')
-
-    let model = this;
-    var now = moment().toISOString();
-
-    // update the last_modified value current date
-    model.last_modified = now;
-
-});
 
 // OMIT RETURNING FIELDS
 ReservationSchema.methods.omitFields = function omitFields(fields, callback) {

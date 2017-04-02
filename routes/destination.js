@@ -99,16 +99,15 @@ router.get('/all', destination.getAllDestinations);
  * @apiName Destination Create
  * @apiVersion 1.0.0
  *
- * @apiParam {Object} destination Destination
- * @apiParam  {String} destination._id Id
- * @apiParam  {String} destination.title Title of Destination
- * @apiParam  {String} destination.description Description
- * @apiParam  {Object[]} destination.location_range Location Ranges
- * @apiParam  {String} destination.location_range.lat Location Range Latitude
- * @apiParam  {String} destination.location_range.lng Location Range Longtiude
+ * @apiParam  {String} _id Id
+ * @apiParam  {String} title Title of Destination
+ * @apiParam  {String} [description] Description
+ * @apiParam  {Object[]} [location_range] Location Ranges
+ * @apiParam  {String} [location_range.lat] Location Range Latitude
+ * @apiParam  {String} [location_range.lng] Location Range Longtiude
  * @apiExample Request Example:
  * {
- * 	  "title": "5 kilo",
+ *    "title": "5 kilo",
  *    "description": "5kilo is a road between 4kilo and 6kilo, in Addis Ababa",
  *    "location_range": [
  *    	{
@@ -126,14 +125,13 @@ router.get('/all', destination.getAllDestinations);
  *    ]
  * }
  * 
- * @apiSuccess {Object} destination  Destination
- * @apiSuccess  {String} destination._id Id
- * @apiSuccess  {String} destination.title Title of Destination
- * @apiSuccess  {String} destination.description Description
- * @apiSuccess  {Object[]} destination.location_range Location Ranges
- * @apiSuccess  {String} destination.location_range.lat Location Range Latitude
- * @apiSuccess  {String} destination.location_range.lng Location Range Longtiude
- * @apiSuccess  {Object[]} destination.place Places found on this destination
+ * @apiSuccess  {String} _id Id
+ * @apiSuccess  {String} title Title of Destination
+ * @apiSuccess  {String} description Description
+ * @apiSuccess  {Object[]} location_range Location Ranges
+ * @apiSuccess  {String} location_range.lat Location Range Latitude
+ * @apiSuccess  {String} location_range.lng Location Range Longtiude
+ * @apiSuccess  {Object[]} place Places found on this destination
  *
  * @apiSuccessExample Success-Response Example: 
  * HTTP/1.1 200 OK
@@ -370,14 +368,13 @@ router.get('/:destinationId', destination.getDestination);
  * @apiName Destination Update
  * @apiVersion 1.0.0
  * 
- * @apiParam {Object} destination Destination
- * @apiParam  {String} destination._id Id
- * @apiParam  {String} destination.title Title of Destination
- * @apiParam  {String} destination.description Description
- * @apiParam  {Object[]} destination.location_range Location Ranges
- * @apiParam  {String} destination.location_range.lat Location Range Latitude
- * @apiParam  {String} destination.location_range.lng Location Range Longtiude
- * @apiParam  {String} destination.place Place
+ * @apiParam  {String} _id Id
+ * @apiParam  {String} title Title of Destination
+ * @apiParam  {String} [description] Description
+ * @apiParam  {Object[]} [location_range] Location Ranges
+ * @apiParam  {String} [location_range.lat] Location Range Latitude
+ * @apiParam  {String} [location_range.lng] Location Range Longtiude
+ * @apiParam  {String} [place] Place
  * @apiExample Request Example:
  * {
  * 	  "title": "5 kilo",
@@ -400,13 +397,13 @@ router.get('/:destinationId', destination.getDestination);
  * }
  * 
  * @apiSuccess {Object} destination  Destination
- * @apiSuccess  {String} destination._id Id
- * @apiSuccess  {String} destination.title Title of Destination
- * @apiSuccess  {String} destination.description Description
- * @apiSuccess  {Object[]} destination.location_range Location Ranges
- * @apiSuccess  {String} destination.location_range.lat Location Range Latitude
- * @apiSuccess  {String} destination.location_range.lng Location Range Longtiude
- * @apiSuccess  {Object[]} destination.place Places found on this destination
+ * @apiSuccess  {String} _id Id
+ * @apiSuccess  {String} title Title of Destination
+ * @apiSuccess  {String} description Description
+ * @apiSuccess  {Object[]} location_range Location Ranges
+ * @apiSuccess  {String} location_range.lat Location Range Latitude
+ * @apiSuccess  {String} location_range.lng Location Range Longtiude
+ * @apiSuccess  {Object[]} place Places found on this destination
  *
  * @apiSuccessExample Success-Response Example: 
  * HTTP/1.1 200 OK

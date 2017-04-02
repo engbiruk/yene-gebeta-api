@@ -3,19 +3,20 @@
  */
 
 // LOAD MODULE DEPEDENCIES
-var debug			= require('debug')('yene-gebeta-api:reservation-dal');
-var moment			= require('moment');
+var debug = require('debug')('yene-gebeta-api:reservation-dal');
+var moment = require('moment');
 
 // LOAD MODELS
-var Reservation			= require('../models/reservation');
+var Reservation = require('../models/reservation');
 
 // LOAD POPULATED AND RETURN FIELDS
 var population = [{
-    path: 'User_profile'
-},
-{
-    path: 'place'
-}];
+        path: 'user_profile'
+    },
+    {
+        path: 'place'
+    }
+];
 
 /**
  * CREATE A NEW RESERVATION
@@ -32,12 +33,12 @@ exports.create = function create(reservationData, callback) {
     var reservationModel = new Reservation(reservationData);
 
     // save the new reservation model to the database
-    reservationModel.save(function saveReservation(err, data){
-        if(err) return callback(err);
-        
+    reservationModel.save(function saveReservation(err, data) {
+        if (err) return callback(err);
+
         // check if the comming data is indeed a reservation data
-        exports.get({_id: data._id}, function (err, reservation){
-            if(err) return callback(err);
+        exports.get({ _id: data._id }, function(err, reservation) {
+            if (err) return callback(err);
             // callback the reservation data if the reservation exists or send empity object if it doesn't
             callback(null, reservation || {});
         });
@@ -57,17 +58,17 @@ exports.delete = function remove(query, callback) {
     debug('[Reservation DAL] Deleting reservation: ', query);
 
     Reservation
-        .findOne(query)     // find the reservation from the query
-        .populate(population)   // populate with a Reservation_profile model link
-        .exec(function deleteReservation(err, reservation){   // executes the query
-            if(err) return callback(err);
-            
+        .findOne(query) // find the reservation from the query
+        .populate(population) // populate with a Reservation_profile model link
+        .exec(function deleteReservation(err, reservation) { // executes the query
+            if (err) return callback(err);
+
             // if the reservation is not set sed a callback empity object (the object is predeleted or doesn't exist)
-            if(!reservation) return callback(null, {});
+            if (!reservation) return callback(null, {});
 
             // if the reservation exist, try removing it from the database
-            reservation.remove(function removeReservation(err){
-                if(err) return callback(err);
+            reservation.remove(function removeReservation(err) {
+                if (err) return callback(err);
 
                 // return the reservation to the callback
                 callback(null, reservation);
@@ -87,11 +88,11 @@ exports.get = function get(query, callback) {
     debug('[Reservation DAL] Geting a reservation: ' + query);
 
     Reservation
-        .findOne(query)     // find the reservation profile from the query
-        .populate(population)   // populate with a Reservation_profile model link
-        .exec(function getReservation(err, reservation){
-            if(err) return callback(err);
-            
+        .findOne(query) // find the reservation profile from the query
+        .populate(population) // populate with a Reservation_profile model link
+        .exec(function getReservation(err, reservation) {
+            if (err) return callback(err);
+
             // return the reservation to the callback function. return empity object if the reservation doesn't exist in the database
             callback(null, reservation || {});
         });
@@ -114,10 +115,10 @@ exports.update = function update(query, updates, callback) {
 
     Reservation
         .findOneAndUpdate(query, updates) // find the reservation from the query and updates them with new updates
-        .populate(population)   // populate with a Reservation_profile model link
-        .exec(function updateReservation(err, reservation){
-            if(err) return callback(err);
-            
+        .populate(population) // populate with a Reservation_profile model link
+        .exec(function updateReservation(err, reservation) {
+            if (err) return callback(err);
+
             // return the updated reservation to the callback function and send an empity object if the reservation doesn't exist anymore
             callback(null, reservation || {});
         });
@@ -135,12 +136,12 @@ exports.getCollection = function getACollectionOfReservations(query, callback) {
     debug('[Reservation DAL] fetching a collection of reservations', query);
 
     Reservation
-    .find(query)
-    .populate(population)
-    .exec(function getReservationsCollection(err, reservations){
-        if(err) return callback(err);
-        
-        // return reservations to the callback function
-        callback(null, reservations || {});
-    });
+        .find(query)
+        .populate(population)
+        .exec(function getReservationsCollection(err, reservations) {
+            if (err) return callback(err);
+
+            // return reservations to the callback function
+            callback(null, reservations || {});
+        });
 };

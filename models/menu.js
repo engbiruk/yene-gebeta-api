@@ -17,6 +17,7 @@ var MenuSchema = new Schema({
     ingredient: { type: String },
     description: { type: String },
     price: { type: Number },
+    isAvailable: { type: Boolean, default: true },
 
     // basic fields
     date_created: { type: Date },
@@ -42,18 +43,6 @@ MenuSchema.pre('save', function preSaveHook(next) {
 
     // call the next middleware
     next();
-});
-
-// PRE UPDATE HOOK
-MenuSchema.pre('update', function preUpdateHook(next) {
-    debug('[Menu Model] Pre-update Hook...')
-
-    let model = this;
-    var now = moment().toISOString();
-
-    // update the last_modified value current date
-    model.last_modified = now;
-
 });
 
 // OMIT RETURNING FIELDS
