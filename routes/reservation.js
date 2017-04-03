@@ -54,6 +54,63 @@ var router = express.Router();
 router.get('/all', reservation.getAllReservations);
 
 /**
+ * @api {post} /reservations Create Reservation
+ * @apiDescription Create Reservation
+ * @apiGroup Reservation
+ * @apiName Reservation Create
+ * @apiVersion 1.0.0
+ *
+ * @apiParam {Number} number_of_guests  Number of Guests
+ * @apiParam {String} reservation_date  Reservation Date
+ * @apiParam {String} reservation_time  Reservation Time
+ * @apiParam {String} [note]  Note or Special requests
+ * @apiParam {String} place  Place of Reservation
+ * 
+ * @apiExample Request Example:
+ * {
+ *	 "number_of_guests": 4,
+ *	 "reservation_date": "22/03/2017",
+ *	 "reservation_time": "22:17",
+ *	 "note": "",
+ *	 "place": "58bdb8204e72552d1449ee93"
+ * }
+ * 
+ * @apiSuccess {String} _id Id
+ * @apiSuccess {Number} number_of_guests  Number of Guests
+ * @apiSuccess {String} reservation_date  Reservation Date
+ * @apiSuccess {String} reservation_time  Reservation Time
+ * @apiSuccess {String} note  Note or Special requests
+ * @apiSuccess {Object} place  Place of Reservation
+ * @apiSuccess {Object} user_profile  User Profile
+ * 
+ * @apiSuccessExample Success-Response Example: 
+ * HTTP/1.1 200 OK
+ * {
+ *  "_id": "58ca57baf43c1b4e5ca9164c",
+ *	 "number_of_guests": 4,
+ *	 "reservation_date": "22/03/2017",
+ *	 "reservation_time": "22:17",
+ *	 "note": "",
+ *	 "place": "58bdb8204e72552d1449ee93",
+ *	 "user_profile": "58d6ac4c7eaf1c4a3811dd2c"
+ * }
+ *
+ * 
+ * @apiError {Boolean} error Indicate Error
+ * @apiError {String} message   Message
+ * @apiErrorExample Error-Response Example:
+ * HTTP/1.1 400 Bad Request
+ * {
+ *      "error": true,
+ *      "message": "The Place feature already registered with the same name!"
+ * }
+ * 
+ * 
+ */
+// POST /reservation
+router.post('/', reservation.createReservation);
+
+/**
  * @api {delete} /reservations/:reservationId Delete Reservation
  * @apiDescription Delete Reservation
  * @apiGroup Reservation
@@ -190,64 +247,5 @@ router.get('/:reservationId', reservation.getReservation);
  */
 // PUT /reservation/:reservationId
 router.put('/:reservationId', reservation.updateReservation);
-
-/**
- * @api {post} /reservations Create Reservation
- * @apiDescription Create Reservation
- * @apiGroup Reservation
- * @apiName Reservation Create
- * @apiVersion 1.0.0
- *
- * @apiParam {Number} number_of_guests  Number of Guests
- * @apiParam {String} reservation_date  Reservation Date
- * @apiParam {String} reservation_time  Reservation Time
- * @apiParam {String} [note]  Note or Special requests
- * @apiParam {String} place  Place of Reservation
- * @apiParam {String} user  User Id
- * 
- * @apiExample Request Example:
- * {
- *	 "number_of_guests": 4,
- *	 "reservation_date": "22/03/2017",
- *	 "reservation_time": "22:17",
- *	 "note": "",
- *	 "place": "58bdb8204e72552d1449ee93",
- *	 "user": "58d6ac4c7eaf1c4a3811dd2c"
- * }
- * 
- * @apiSuccess {String} _id Id
- * @apiSuccess {Number} number_of_guests  Number of Guests
- * @apiSuccess {String} reservation_date  Reservation Date
- * @apiSuccess {String} reservation_time  Reservation Time
- * @apiSuccess {String} note  Note or Special requests
- * @apiSuccess {Object} place  Place of Reservation
- * @apiSuccess {Object} user_profile  User Profile
- * 
- * @apiSuccessExample Success-Response Example: 
- * HTTP/1.1 200 OK
- * {
- *  "_id": "58ca57baf43c1b4e5ca9164c",
- *	 "number_of_guests": 4,
- *	 "reservation_date": "22/03/2017",
- *	 "reservation_time": "22:17",
- *	 "note": "",
- *	 "place": "58bdb8204e72552d1449ee93",
- *	 "user_profile": "58d6ac4c7eaf1c4a3811dd2c"
- * }
- *
- * 
- * @apiError {Boolean} error Indicate Error
- * @apiError {String} message   Message
- * @apiErrorExample Error-Response Example:
- * HTTP/1.1 400 Bad Request
- * {
- *      "error": true,
- *      "message": "The Place feature already registered with the same name!"
- * }
- * 
- * 
- */
-// POST /reservation
-router.post('/', reservation.createReservation);
 
 module.exports = router;

@@ -43,39 +43,27 @@ exports.createReservation = function createReservation(req, res, next) {
     workflow.on('checkIfReservationExists', function checkIfReservationExists() {
         debug('Validate if reservation exists', req.body.user);
 
-        UserDal.get({
-            _id: req.body.user
-        }, function(err, user) {
+        var user = req._user;
+        // get the reservation from the db with a name passed
+        ReservationDal.get({
+            number_of_guests: req.body.number_of_guests,
+            reservation_date: req.body.reservation_date,
+            reservation_time: req.body.reservation_time,
+            user_profile: user.user_profile,
+            place: req.body.place
+        }, function(err, reservation) {
             if (err) return next(err);
-
-            if (!user._id) {
-                res.status(404).json({
+            // check if the reservation exists
+            if (reservation._id) {
+                // return error
+                res.status(400).json({
                     error: true,
-                    message: "No User Found with that user Id!"
+                    message: 'The Reservation already registered with the same info!'
                 });
-                return;
+            } else {
+                // got to the next workflow
+                workflow.emit('createReservation', user);
             }
-            // get the reservation from the db with a name passed
-            ReservationDal.get({
-                number_of_guests: req.body.number_of_guests,
-                reservation_date: req.body.reservation_date,
-                reservation_time: req.body.reservation_time,
-                user_profile: user.user_profile,
-                place: req.body.place
-            }, function(err, reservation) {
-                if (err) return next(err);
-                // check if the reservation exists
-                if (reservation._id) {
-                    // return error
-                    res.status(400).json({
-                        error: true,
-                        message: 'The Reservation already registered with the same info!'
-                    });
-                } else {
-                    // got to the next workflow
-                    workflow.emit('createReservation', user);
-                }
-            });
         });
     });
 

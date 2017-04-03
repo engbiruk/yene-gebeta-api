@@ -52,6 +52,49 @@ var router = express.Router();
 router.get('/all', place_feature.getAllPlaceFeatures);
 
 /**
+ * @api {post} /place_features Create Place Feature
+ * @apiDescription Create Place Feature
+ * @apiGroup Place_feature
+ * @apiName Place_feature Create
+ * @apiVersion 1.0.0
+ *
+ * @apiParam {String} name  Place_feature Name
+ * @apiParam {String} [description]  Description
+ * @apiExample Request Example:
+ * {
+ *	 "name": "Free WiFi",
+ *	 "description": "Free WiFi is available"
+ * }
+ * 
+ * @apiSuccess  {String} _id Id
+ * @apiSuccess  {String} name Name of Place Feature
+ * @apiSuccess  {String} description Description
+ * 
+ * @apiSuccessExample Success-Response Example: 
+ * HTTP/1.1 200 OK
+ * {
+ *  "_id": "58ca57baf43c1b4e5ca9164c",
+ *	 "name": "Free WiFi",
+ *	 "description": "Free WiFi is available"
+ * }
+ *
+ * 
+ * @apiError {Boolean} error Indicate Error
+ * @apiError {String} message   Message
+ * @apiErrorExample Error-Response Example:
+ * HTTP/1.1 400 Bad Request
+ * {
+ *      "error": true,
+ *      "message": "The Place feature already registered with the same name!"
+ * }
+ * 
+ * 
+ */
+
+// POST /place_features
+router.post('/', place_feature.createPlaceFeature);
+
+/**
  * @api {delete} /place_features/:place_featureId Delete Place Feature
  * @apiDescription Delete Place Feature
  * @apiGroup Place_feature
@@ -161,47 +204,5 @@ router.get('/:place_featureId', place_feature.getPlaceFeature);
 // PUT /place_features/:place_featureId
 router.put('/:place_featureId', place_feature.updatePlaceFeature);
 
-/**
- * @api {post} /place_features Create Place Feature
- * @apiDescription Create Place Feature
- * @apiGroup Place_feature
- * @apiName Place_feature Create
- * @apiVersion 1.0.0
- *
- * @apiParam {String} name  Place_feature Name
- * @apiParam {String} [description]  Description
- * @apiExample Request Example:
- * {
- *	 "name": "Free WiFi",
- *	 "description": "Free WiFi is available"
- * }
- * 
- * @apiSuccess  {String} _id Id
- * @apiSuccess  {String} name Name of Place Feature
- * @apiSuccess  {String} description Description
- * 
- * @apiSuccessExample Success-Response Example: 
- * HTTP/1.1 200 OK
- * {
- *  "_id": "58ca57baf43c1b4e5ca9164c",
- *	 "name": "Free WiFi",
- *	 "description": "Free WiFi is available"
- * }
- *
- * 
- * @apiError {Boolean} error Indicate Error
- * @apiError {String} message   Message
- * @apiErrorExample Error-Response Example:
- * HTTP/1.1 400 Bad Request
- * {
- *      "error": true,
- *      "message": "The Place feature already registered with the same name!"
- * }
- * 
- * 
- */
-
-// POST /place_features
-router.post('/', place_feature.createPlaceFeature);
 
 module.exports = router;
