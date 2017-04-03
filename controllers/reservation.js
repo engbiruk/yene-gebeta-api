@@ -49,7 +49,10 @@ exports.createReservation = function createReservation(req, res, next) {
             if (err) return next(err);
 
             if (!user._id) {
-                res.status(404).json({ message: "No User Found with that user Id!" });
+                res.status(404).json({
+                    error: true,
+                    message: "No User Found with that user Id!"
+                });
                 return;
             }
             // get the reservation from the db with a name passed

@@ -22,11 +22,13 @@ exports.createReview = function createReview(req, res, next) {
 
     var workflow = new events.EventEmitter();
 
-    // check if the rate field is valid
+    // check if the name field is valid
     workflow.on('validateReview', function validation() {
         debug('Validate review');
 
-        req.checkBody('rate', 'Rate Should not be Empty!').notEmpty();
+        req.checkBody('rate', 'You must specify Rate!').notEmpty();
+        req.checkBody('place', 'You must specify Place of Review!').notEmpty();
+
         if (req.validationErrors()) {
             res.status(400).json(req.validationErrors());
             return;
@@ -34,57 +36,49 @@ exports.createReview = function createReview(req, res, next) {
             workflow.emit('checkIfReviewExists');
         }
     });
-
-    // check if the review rate exists before
+    // check if the review name exists before
     workflow.on('checkIfReviewExists', function checkIfReviewExists() {
-        debug('Validate if review exists');
+        debug('Validate if review exists', req.body.user);
 
-        UserDal.get({ _id: req.body.user }, function(err, user) {
+        var user = req._user;
+        // get the review from the db with a name passed
+        ReviewDal.get({
+            user_profile: user.user_profile,
+            place: req.body.place
+        }, function(err, review) {
             if (err) return next(err);
-
-            if (!user._id) {
-                res.status(404).json({
+            // check if the review exists
+            if (review._id) {
+                // return error
+                res.status(400).json({
                     error: true,
-                    message: "No User Found with that user Id!"
+                    message: 'The Review already registered with the same info!'
                 });
-                return;
+            } else {
+                // got to the next workflow
+                workflow.emit('createReview', user);
             }
-
-            // get the review from the db with a rate passed
-            ReviewDal.get({
-                user_profile: user.user_profile,
-                place: req.body.place
-            }, function(err, review) {
-                if (err) return next(err);
-                // check if the review exists
-                if (review._id) {
-                    // return error
-                    res.status(400).json({
-                        error: true,
-                        message: 'The User already submitted a review!'
-                    });
-                } else {
-                    // got to the next workflow
-                    workflow.emit('createReview', user);
-                }
-            });
         });
 
     });
 
     // create a review
     workflow.on('createReview', function createReview(user) {
-        debug('create Review');
+        debug('create Place Category');
 
         ReviewDal.create({
             rate: req.body.rate,
             title: req.body.title ? req.body.title : '',
-            description: req.body.description ? req.body.description : '',
+            desciption: req.body.desciption ? req.body.desciption : '',
             place: req.body.place,
             user_profile: user.user_profile
         }, function cb(err, review) {
             if (err) return next(err);
 
+            if (!review._id) {
+                res.status(500).json({ message: "Can not create Review!" });
+                return;
+            }
             // trigger the next workflow
             workflow.emit('respond', review);
         });
@@ -127,7 +121,7 @@ exports.deleteReview = function deleteReview(req, res, next) {
 
     // delete a review
     workflow.on('deleteReview', function createReview() {
-        debug('delete Review');
+        debug('delete Place Category');
 
         ReviewDal.delete({
             _id: req.params.reviewId
@@ -187,7 +181,7 @@ exports.getReview = function getReview(req, res, next) {
 
     // get a review
     workflow.on('getReview', function createReview() {
-        debug('get Review');
+        debug('get Place Category');
 
         ReviewDal.get({
             _id: req.params.reviewId
@@ -231,28 +225,49 @@ exports.updateReview = function updateReview(req, res, next) {
     workflow.on('validateReview', function validation() {
         debug('Validate review');
 
-        // check if the objectId is right
-        if (!mongoose.Types.ObjectId.isValid(req.params.reviewId)) {
-            res.status(400).json({
-                error: true,
-                message: 'Please Use Correct reviewId!'
-            });
+        req.checkBody('rate', 'You must specify rate!').notEmpty();
+        req.checkBody('place', 'You must specify place of review!').notEmpty();
+
+        if (req.validationErrors()) {
+            res.status(400).json(req.validationErrors());
             return;
         } else {
-            workflow.emit('updateReview');
+            // check if the objectId is right
+            if (!mongoose.Types.ObjectId.isValid(req.params.reviewId)) {
+                res.status(400).json({
+                    error: true,
+                    message: 'Please Use Correct reviewId!'
+                });
+                return;
+            } else {
+                ReviewDal.get({ _id: req.params._id }, function(err, review) {
+                    if (err) return next(err);
+
+                    if (!review._id) {
+                        res.status(500).json({
+                            error: true,
+                            message: 'Review Could Not Found to Update!'
+                        });
+                    }
+
+                    workflow.emit('updateReview', review);
+                });
+            }
         }
     });
 
     // update a review
-    workflow.on('updateReview', function createReview() {
-        debug('update Review');
+    workflow.on('updateReview', function createReview(review) {
+        debug('update Place Category');
 
         ReviewDal.update({
             _id: req.params.reviewId
         }, {
             rate: req.body.rate,
             title: req.body.title ? req.body.title : '',
-            description: req.body.description ? req.body.description : ''
+            desciption: req.body.desciption ? req.body.desciption : review.desciption ? review.desciption : '',
+            place: req.body.place,
+            user_profile: user.user_profile
         }, function cb(err, review) {
             if (err) return next(err);
             // check if the review exists or not
@@ -284,14 +299,14 @@ exports.updateReview = function updateReview(req, res, next) {
 };
 
 // get all review
-exports.getAllPlaceCategories = function getAllPlaceCategories(req, res, next) {
+exports.getAllReviews = function getAllReviews(req, res, next) {
     debug('get a review');
 
     var workflow = new events.EventEmitter();
 
     // get a review
-    workflow.on('getPlaceCategories', function createReview() {
-        debug('get Place Categories');
+    workflow.on('getReviews', function createReview() {
+        debug('get Reviews');
 
         ReviewDal.getCollection({}, function cb(err, reviews) {
             if (err) return next(err);
@@ -323,5 +338,5 @@ exports.getAllPlaceCategories = function getAllPlaceCategories(req, res, next) {
     });
 
     // trigger the workflow
-    workflow.emit('getPlaceCategories');
+    workflow.emit('getReviews');
 };

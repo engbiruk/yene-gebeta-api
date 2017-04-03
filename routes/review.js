@@ -48,7 +48,60 @@ var router = express.Router();
  * 
  */
 // GET /reviews/all
-router.get('/all', review.getAllPlaceCategories);
+router.get('/all', review.getAllReviews);
+
+/**
+ * @api {post} /reviews Create Review
+ * @apiDescription Create Review
+ * @apiGroup Review
+ * @apiName Review Create
+ * @apiVersion 1.0.0
+ *
+ * @apiParam {Number} rate Rate
+ * @apiParam {String} [title]  Review Title
+ * @apiParam {String} [description]  Description
+ * @apiParam {String} place Place Id
+ *
+ * @apiExample Request Example:
+ * {
+ *   "rate": 4.5,
+ *	 "title": "Very Cool Place",
+ *	 "description": "I love the place",
+ *	 "place": "58bdb8204e72552d1449ee93"
+ * }
+ * 
+ * @apiSuccess {String} _id Id
+ * @apiSuccess {Number} rate Rate
+ * @apiSuccess {String} title  Review Title
+ * @apiSuccess {String} description  Description
+ * @apiSuccess {Object} user User Detail
+ * @apiSuccess {Object} place Place Detail
+ * 
+ * @apiSuccessExample Success-Response Example: 
+ * HTTP/1.1 200 OK
+ * {
+ *  "_id": "58ca57baf43c1b4e5ca9164c",
+ *   "rate": 4.5,
+ *	 "title": "Very Cool Place",
+ *	 "description": "I love the place",
+ *	 "place": "58bdb8204e72552d1449ee93",
+ *	 "user": "58d6ac4c7eaf1c4a3811dd2c"
+ * }
+ *
+ * 
+ * @apiError {Boolean} error Indicate Error
+ * @apiError {String} message   Message
+ * @apiErrorExample Error-Response Example:
+ * HTTP/1.1 400 Bad Request
+ * {
+ *      "error": true,
+ *      "message": "The Review already registered with the same name!"
+ * }
+ * 
+ * 
+ */
+// POST /reviews
+router.post('/', review.createReview);
 
 /**
  * @api {delete} /reviews/:reviewId Delete Review
@@ -181,60 +234,5 @@ router.get('/:reviewId', review.getReview);
  */
 // PUT /reviews/:reviewId
 router.put('/:reviewId', review.updateReview);
-
-/**
- * @api {post} /reviews Create Review
- * @apiDescription Create Review
- * @apiGroup Review
- * @apiName Review Create
- * @apiVersion 1.0.0
- *
- * @apiParam {Number} rate Rate
- * @apiParam {String} [title]  Review Title
- * @apiParam {String} [description]  Description
- * @apiParam {String} [user] User Id
- * @apiParam {String} [place] Place Id
- *
- * @apiExample Request Example:
- * {
- *   "rate": 4.5,
- *	 "title": "Very Cool Place",
- *	 "description": "I love the place",
- *	 "place": "58bdb8204e72552d1449ee93",
- *	 "user": "58d6ac4c7eaf1c4a3811dd2c"
- * }
- * 
- * @apiSuccess {String} _id Id
- * @apiSuccess {Number} rate Rate
- * @apiSuccess {String} title  Review Title
- * @apiSuccess {String} description  Description
- * @apiSuccess {Object} user User Detail
- * @apiSuccess {Object} place Place Detail
- * 
- * @apiSuccessExample Success-Response Example: 
- * HTTP/1.1 200 OK
- * {
- *  "_id": "58ca57baf43c1b4e5ca9164c",
- *   "rate": 4.5,
- *	 "title": "Very Cool Place",
- *	 "description": "I love the place",
- *	 "place": "58bdb8204e72552d1449ee93",
- *	 "user": "58d6ac4c7eaf1c4a3811dd2c"
- * }
- *
- * 
- * @apiError {Boolean} error Indicate Error
- * @apiError {String} message   Message
- * @apiErrorExample Error-Response Example:
- * HTTP/1.1 400 Bad Request
- * {
- *      "error": true,
- *      "message": "The Review already registered with the same name!"
- * }
- * 
- * 
- */
-// POST /reviews
-router.post('/', review.createReview);
 
 module.exports = router;
