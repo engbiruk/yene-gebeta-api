@@ -5,7 +5,7 @@ var express = require('express');
 var reservation = require('../controllers/reservation');
 var auth = require('../controllers/auth');
 var authorize = require('../lib/authorize');
-//var authenticate = require('../lib/authenticate');
+var authenticate = require('../lib/authenticate');
 
 // CREATE A ROUTER
 var router = express.Router();
@@ -108,7 +108,7 @@ router.get('/all', reservation.getAllReservations);
  * 
  */
 // POST /reservation
-router.post('/', reservation.createReservation);
+router.post('/', authenticate(), reservation.createReservation);
 
 /**
  * @api {delete} /reservations/:reservationId Delete Reservation
@@ -151,7 +151,7 @@ router.post('/', reservation.createReservation);
  */
 
 // DELETE /reservation/:reservationId
-router.delete('/:reservationId', reservation.deleteReservation);
+router.delete('/:reservationId', authenticate(), reservation.deleteReservation);
 
 /**
  * @api {get} /reservations/:reservationId Get Reservation
@@ -192,7 +192,7 @@ router.delete('/:reservationId', reservation.deleteReservation);
  * 
  */
 // GET /reservation/:reservationId
-router.get('/:reservationId', reservation.getReservation);
+router.get('/:reservationId', authenticate(), reservation.getReservation);
 
 /**
  * @api {put} /reservations/:reservationId Update Reservation
@@ -246,6 +246,6 @@ router.get('/:reservationId', reservation.getReservation);
  * 
  */
 // PUT /reservation/:reservationId
-router.put('/:reservationId', reservation.updateReservation);
+router.put('/:reservationId', authenticate(), reservation.updateReservation);
 
 module.exports = router;

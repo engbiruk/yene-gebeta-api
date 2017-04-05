@@ -5,7 +5,7 @@ var express = require('express');
 var review = require('../controllers/review');
 var auth = require('../controllers/auth');
 var authorize = require('../lib/authorize');
-//var authenticate = require('./lib/authenticate');
+var authenticate = require('../lib/authenticate');
 
 // CREATE A ROUTER
 var router = express.Router();
@@ -101,7 +101,7 @@ router.get('/all', review.getAllReviews);
  * 
  */
 // POST /reviews
-router.post('/', review.createReview);
+router.post('/', authenticate(), review.createReview);
 
 /**
  * @api {delete} /reviews/:reviewId Delete Review
@@ -144,7 +144,7 @@ router.post('/', review.createReview);
  */
 
 // DELETE /reviews/:reviewId
-router.delete('/:reviewId', review.deleteReview);
+router.delete('/:reviewId', authenticate(), review.deleteReview);
 
 /**
  * @api {get} /reviews/:reviewId Get Review
@@ -181,7 +181,7 @@ router.delete('/:reviewId', review.deleteReview);
  * 
  */
 // GET /reviews/:reviewId
-router.get('/:reviewId', review.getReview);
+router.get('/:reviewId', authenticate(), review.getReview);
 
 /**
  * @api {put} /reviews/:reviewId Update Review
@@ -233,6 +233,6 @@ router.get('/:reviewId', review.getReview);
  * 
  */
 // PUT /reviews/:reviewId
-router.put('/:reviewId', review.updateReview);
+router.put('/:reviewId', authenticate(), review.updateReview);
 
 module.exports = router;

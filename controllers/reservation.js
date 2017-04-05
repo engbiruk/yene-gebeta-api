@@ -29,7 +29,6 @@ exports.createReservation = function createReservation(req, res, next) {
         req.checkBody('number_of_guests', 'You must specify number of guests!').notEmpty();
         req.checkBody('reservation_date', 'Reservation Date Should not be Empty!').notEmpty();
         req.checkBody('reservation_time', 'Reservation Time Should not be Empty!').notEmpty();
-        req.checkBody('user', 'Reservation user id Should not be Empty!').notEmpty();
         req.checkBody('place', 'Place Id Should not be Empty!').notEmpty();
 
         if (req.validationErrors()) {
