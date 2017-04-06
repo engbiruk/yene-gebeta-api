@@ -47,7 +47,7 @@ exports.getPlace = function getPlace(req, res, next) {
         }
 
         // remove unwanted fields from populated Place_profile field in the Place
-        Place.omitFields([], function (err, _Place) {
+        Place.omitFields([], function(err, _Place) {
             if (err) return next(err);
 
             // return the Place to the requester
@@ -172,8 +172,11 @@ exports.createPlace = function createPlace(req, res, next) {
                 lat: 0,
                 lng: 0
             },
-            //logo: body.logo?body.logo: '',
-            //destination: body.destination ?body.destination:{}
+            place_feature: body.place_feature ? body.place_feature : [],
+            place_category: body.place_category ? body.place_category : [],
+            place_cuisine: body.place_cuisine ? body.place_cuisine : []
+                //logo: body.logo?body.logo: '',
+                //destination: body.destination ?body.destination:{}
         }, function callback(err, place) {
             if (err) return next(err);
 
@@ -188,7 +191,7 @@ exports.createPlace = function createPlace(req, res, next) {
         debug('[Workflow: respond] respond to the request...');
 
         // remove unwanted fields
-        place.omitFields([], function (err, _place) {
+        place.omitFields([], function(err, _place) {
             if (err) return next(err);
             // send back a respond
             res.status(201); // Created
