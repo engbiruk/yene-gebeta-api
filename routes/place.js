@@ -86,6 +86,9 @@ var router = express.Router();
  *     "can_reserve": true,
  *     "city": "Addis Ababa",
  *     "country": ""
+ *     "place_feature": ["78ca30a46435260783a7c8df","18ca30a46435260783a7c8da"],
+ *     "place_category": ["98ca30a46435260783a7c8df","17ca30a46435260783a7c8da", "a3ca30a46435260783a7c8de"],
+ *     "place_cuisine": ["38ca30a46435260783a7c8dc","18ca30a46435260783a7c8d3"]
  * }
  * 
  * 
