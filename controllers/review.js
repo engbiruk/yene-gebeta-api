@@ -79,6 +79,18 @@ exports.createReview = function createReview(req, res, next) {
                 res.status(500).json({ message: "Can not create Review!" });
                 return;
             }
+            // update the the place
+            PlaceDal.update({ _id: req.body.place }, { $push: { review: review._id } }, function(err, place) {
+                if (err) return next(err);
+
+                if (!place._id) {
+                    res.status(500).json({
+                        error: true,
+                        message: 'Could not update the place!'
+                    });
+                    return;
+                }
+            });
             // trigger the next workflow
             workflow.emit('respond', review);
         });
@@ -215,6 +227,68 @@ exports.getReview = function getReview(req, res, next) {
     workflow.emit('validateReview');
 };
 
+// get a review based on place
+exports.getReviewWithPlace = function getReviewWithPlace(req, res, next) {
+    debug('get a review');
+
+    var workflow = new events.EventEmitter();
+
+    // check if the review ID field is valid
+    workflow.on('validateReview', function validation() {
+        debug('Validate review');
+
+        // check if the objectId is right
+        if (!mongoose.Types.ObjectId.isValid(req.params.placeId)) {
+            res.status(400).json({
+                error: true,
+                message: 'Please Use Correct placeId!'
+            });
+            return;
+        } else {
+            workflow.emit('getReview');
+        }
+    });
+
+    // get a review
+    workflow.on('getReview', function createReview() {
+        debug('get Place Category');
+
+        ReviewDal.getCollection({
+            place: req.params.placeId
+                //_id: req.params.reviewId
+        }, function cb(err, reviews) {
+            if (err) return next(err);
+            // check if the review exists or not
+            if (!Array.isArray(reviews)) {
+                res.status(400).json({
+                    error: true,
+                    message: 'NO Review has been registered with this Place ID!'
+                });
+                return;
+            } else {
+                // trigger the next workflow
+                workflow.emit('respond', reviews);
+            }
+        });
+    });
+
+    // respond the user with a message
+    workflow.on('respond', function respond(reviews) {
+        debug('respond');
+        _reviews = [];
+        // omit the unecessary fields
+        reviews.forEach(function(review) {
+            review.omitFields([], function(err, _review) {
+                _reviews.push(_review);
+            });
+        });
+        res.status(200).json(_reviews);
+    });
+
+    // trigger the workflow
+    workflow.emit('validateReview');
+};
+
 // update a review
 exports.updateReview = function updateReview(req, res, next) {
     debug('update a review');
@@ -266,8 +340,8 @@ exports.updateReview = function updateReview(req, res, next) {
             rate: req.body.rate,
             title: req.body.title ? req.body.title : '',
             desciption: req.body.desciption ? req.body.desciption : review.desciption ? review.desciption : '',
-            place: req.body.place,
-            user_profile: user.user_profile
+            //place: req.body.place,
+            //user_profile: user.user_profile
         }, function cb(err, review) {
             if (err) return next(err);
             // check if the review exists or not

@@ -51,6 +51,47 @@ var router = express.Router();
 router.get('/all', review.getAllReviews);
 
 /**
+ * @api {get} /reviews/place/:placeId Get Review with in a place
+ * @apiDescription Get Review with in a place
+ * @apiGroup Review
+ * @apiName Review Get based on place
+ * @apiVersion 1.0.0
+ *
+ * @apiSuccess {String} _id Id
+ * @apiSuccess {Number} number_of_guests  Number of Guests
+ * @apiSuccess {String} review_date  Review Date
+ * @apiSuccess {String} review_time  Review Time
+ * @apiSuccess {String} note  Note or Special requests
+ * @apiSuccess {Object} place  Place of Review
+ * @apiSuccess {Object} user_profile  User Profile
+ * 
+ * @apiSuccessExample Success-Response Example: 
+ * HTTP/1.1 200 OK
+ * {
+ *  "_id": "58ca57baf43c1b4e5ca9164c",
+ *	 "number_of_guests": 4,
+ *	 "review_date": "22/03/2017",
+ *	 "review_time": "22:17",
+ *	 "note": "",
+ *	 "place": "58bdb8204e72552d1449ee93",
+ *	 "user_profile": "58d6ac4c7eaf1c4a3811dd2c"
+ * }
+ *
+ * 
+ * @apiError {Boolean} error Indicate Error
+ * @apiError {String} message   Message
+ * @apiErrorExample Error-Response Example:
+ * HTTP/1.1 400 Bad Request
+ * {
+ *      "error": true,
+ *      "message": "NO Review has been registered with this ID!"
+ * }
+ * 
+ */
+// GET /review/place/:placeId
+router.get('/place/:placeId', review.getReviewWithPlace);
+
+/**
  * @api {post} /reviews Create Review
  * @apiDescription Create Review
  * @apiGroup Review

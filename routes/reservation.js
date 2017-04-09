@@ -54,6 +54,47 @@ var router = express.Router();
 router.get('/all', reservation.getAllReservations);
 
 /**
+ * @api {get} /reservations/place/:placeId Get Reservation with in a place
+ * @apiDescription Get Reservation with in a place
+ * @apiGroup Reservation
+ * @apiName Reservation Get based on place
+ * @apiVersion 1.0.0
+ *
+ * @apiSuccess {String} _id Id
+ * @apiSuccess {Number} number_of_guests  Number of Guests
+ * @apiSuccess {String} reservation_date  Reservation Date
+ * @apiSuccess {String} reservation_time  Reservation Time
+ * @apiSuccess {String} note  Note or Special requests
+ * @apiSuccess {Object} place  Place of Reservation
+ * @apiSuccess {Object} user_profile  User Profile
+ * 
+ * @apiSuccessExample Success-Response Example: 
+ * HTTP/1.1 200 OK
+ * {
+ *  "_id": "58ca57baf43c1b4e5ca9164c",
+ *	 "number_of_guests": 4,
+ *	 "reservation_date": "22/03/2017",
+ *	 "reservation_time": "22:17",
+ *	 "note": "",
+ *	 "place": "58bdb8204e72552d1449ee93",
+ *	 "user_profile": "58d6ac4c7eaf1c4a3811dd2c"
+ * }
+ *
+ * 
+ * @apiError {Boolean} error Indicate Error
+ * @apiError {String} message   Message
+ * @apiErrorExample Error-Response Example:
+ * HTTP/1.1 400 Bad Request
+ * {
+ *      "error": true,
+ *      "message": "NO Reservation has been registered with this ID!"
+ * }
+ * 
+ */
+// GET /reservation/place/:placeId
+router.get('/place/:placeId', reservation.getReservationWithPlace);
+
+/**
  * @api {post} /reservations Create Reservation
  * @apiDescription Create Reservation
  * @apiGroup Reservation
@@ -192,7 +233,7 @@ router.delete('/:reservationId', authenticate(), reservation.deleteReservation);
  * 
  */
 // GET /reservation/:reservationId
-router.get('/:reservationId', authenticate(), reservation.getReservation);
+router.get('/:reservationId', reservation.getReservation);
 
 /**
  * @api {put} /reservations/:reservationId Update Reservation

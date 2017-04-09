@@ -47,9 +47,9 @@ var router = express.Router();
  * @apiParam {Boolean} [can_reserve=false] Does this place accept a reservation? 
  * @apiParam {String} [city='Addis Ababa'] City
  * @apiParam {String} [country='Ethiopia'] Country
- * @apiParam {String} [place_feature] Place Feature Id
- * @apiParam {String} [place_category] Place Category Id
- * @apiParam {String} [place_cuisine] Place Cuisine Id
+ * @apiParam {Object} [place_feature] Place Feature Id
+ * @apiParam {Object} [place_category] Place Category Id
+ * @apiParam {Object} [place_cuisine] Place Cuisine Id
  * @apiExample Request Example:
  * {
  *     "name": "Mary ZONE",

@@ -8,6 +8,7 @@ var mongoose = require('mongoose');
 // LOAD MODEL'S DAL
 var ReservationDal = require('../dal/reservation');
 var UserDal = require('../dal/user');
+var PlaceDal = require('../dal/place');
 
 // EXPORT NOOP
 exports.noop = function noop(req, res, next) {
@@ -84,6 +85,18 @@ exports.createReservation = function createReservation(req, res, next) {
                 res.status(500).json({ message: "Can not create Reservation!" });
                 return;
             }
+            // update the the place
+            PlaceDal.update({ _id: req.body.place }, { $push: { reservation: reservation._id } }, function(err, place) {
+                if (err) return next(err);
+
+                if (!place._id) {
+                    res.status(500).json({
+                        error: true,
+                        message: 'Could not update the place!'
+                    });
+                    return;
+                }
+            });
             // trigger the next workflow
             workflow.emit('respond', reservation);
         });
@@ -214,6 +227,68 @@ exports.getReservation = function getReservation(req, res, next) {
         reservation.omitFields([], function(err, _reservation) {
             res.status(200).json(_reservation);
         });
+    });
+
+    // trigger the workflow
+    workflow.emit('validateReservation');
+};
+
+// get a reservation based on place
+exports.getReservationWithPlace = function getReservationWithPlace(req, res, next) {
+    debug('get a reservation');
+
+    var workflow = new events.EventEmitter();
+
+    // check if the reservation ID field is valid
+    workflow.on('validateReservation', function validation() {
+        debug('Validate reservation');
+
+        // check if the objectId is right
+        if (!mongoose.Types.ObjectId.isValid(req.params.placeId)) {
+            res.status(400).json({
+                error: true,
+                message: 'Please Use Correct placeId!'
+            });
+            return;
+        } else {
+            workflow.emit('getReservation');
+        }
+    });
+
+    // get a reservation
+    workflow.on('getReservation', function createReservation() {
+        debug('get Place Category');
+
+        ReservationDal.getCollection({
+            place: req.params.placeId
+                //_id: req.params.reservationId
+        }, function cb(err, reservations) {
+            if (err) return next(err);
+            // check if the reservation exists or not
+            if (!Array.isArray(reservations)) {
+                res.status(400).json({
+                    error: true,
+                    message: 'NO Reservation has been registered with this Place ID!'
+                });
+                return;
+            } else {
+                // trigger the next workflow
+                workflow.emit('respond', reservations);
+            }
+        });
+    });
+
+    // respond the user with a message
+    workflow.on('respond', function respond(reservations) {
+        debug('respond');
+        _reservations = [];
+        // omit the unecessary fields
+        reservations.forEach(function(reservation) {
+            reservation.omitFields([], function(err, _reservation) {
+                _reservations.push(_reservation);
+            });
+        });
+        res.status(200).json(_reservations);
     });
 
     // trigger the workflow
